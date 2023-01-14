@@ -9,6 +9,8 @@ class Photo extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'url',
         'id_barber'

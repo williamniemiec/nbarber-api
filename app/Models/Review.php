@@ -9,6 +9,8 @@ class Review extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'rate',
         'id_barber'
