@@ -20,8 +20,8 @@ return new class extends Migration
             $table->float('price');
             $table
                 ->foreign('id_barber')
-                ->references('barbers')
-                ->on('id')
+                ->references('id')
+                ->on('barbers')
                 ->cascadeOnDelete();
         });
     }

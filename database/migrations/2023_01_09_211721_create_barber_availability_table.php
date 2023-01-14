@@ -21,8 +21,8 @@ return new class extends Migration
             $table->text('hours');
             $table
                 ->foreign('id_barber')
-                ->references('barbers')
-                ->on('id')
+                ->references('id')
+                ->on('barbers')
                 ->cascadeOnDelete();
         });
     }

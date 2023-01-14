@@ -19,13 +19,13 @@ return new class extends Migration
             $table->unsignedBigInteger('id_barber');
             $table
                 ->foreign('id_user')
-                ->references('users')
-                ->on('id')
+                ->references('id')
+                ->on('users')
                 ->cascadeOnDelete();
             $table
                 ->foreign('id_barber')
-                ->references('barbers')
-                ->on('id')
+                ->references('id')
+                ->on('barbers')
                 ->cascadeOnDelete();
         });
     }

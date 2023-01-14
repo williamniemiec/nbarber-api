@@ -19,8 +19,8 @@ return new class extends Migration
             $table->float('rate');
             $table
                 ->foreign('id_barber')
-                ->references('barbers')
-                ->on('id')
+                ->references('id')
+                ->on('barbers')
                 ->cascadeOnDelete();
         });
     }
