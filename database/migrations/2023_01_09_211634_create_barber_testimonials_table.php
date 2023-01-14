@@ -16,9 +16,15 @@ return new class extends Migration
         Schema::create('barber_testimonials', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_barber');
-            $table->string('name');
+            $table->unsignedBigInteger('id_user');
+            $table->string('title');
             $table->float('rate');
             $table->string('body');
+            $table
+                ->foreign('id_user')
+                ->references('users')
+                ->on('id')
+                ->cascadeOnDelete();
             $table
                 ->foreign('id_barber')
                 ->references('barbers')

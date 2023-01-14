@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_barber');
-            $table->dateTime('appointment');
+            $table->dateTime('date');
             $table
                 ->foreign('id_user')
                 ->references('users')
