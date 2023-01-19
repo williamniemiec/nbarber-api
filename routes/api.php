@@ -22,10 +22,10 @@ Route::get('/ping', function () {
 });
 
 Route::name('auth.')->prefix('/auth')->group(function () {
-    Route::get('/signin', [AuthController::class, 'signin']);
-    Route::get('/signout', [AuthController::class, 'signout']);
-    Route::get('/signup', [AuthController::class, 'signup']);
-    Route::get('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/signin', [AuthController::class, 'signin'])->name('signin');
+    Route::post('/signout', [AuthController::class, 'signout'])->name('signout');
+    Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
+    Route::get('/refresh', [AuthController::class, 'refresh'])->name('refresh');
 });
 
 Route::name('user.')->prefix('/user')->group(function () {
