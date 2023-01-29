@@ -19,8 +19,8 @@ class BarberFactory extends Factory
         return [
             'name' => fake()->name(),
             'stars' => fake()->numberBetween(3, 5),
-            'latitude' => '-30.0741528',
-            'longitude' => '-51.1275954'
+            'latitude' => -30.0741528,
+            'longitude' => -51.1275954
         ];
     }
 }

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('avatar')->default('default.png');
             $table->float('stars')->default(0);
-            $table->string('latitude')->nullable();
-            $table->string('longitude')->nullable();
+            $table->float('latitude')->nullable();
+            $table->float('longitude')->nullable();
         });
     }
 
