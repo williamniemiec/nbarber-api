@@ -15,8 +15,17 @@ class BarberController extends Controller
         $this->loggedUser = auth()->user();
     }
 
-    public function getAll()
+    public function list()
     {
-        return Barber::all();
+        $array = ['error' => ''];
+
+        $array['data'] = Barber::all();
+        $array['loc'] = 'Porto Alegre';
+
+        foreach ($array['data'] as $key => $value) {
+            $array['data'][$key]['avatar'] = url('media/avatars/' . $array['data'][$key]['avatar']);
+        }
+
+        return response()->json($array);
     }
 }
