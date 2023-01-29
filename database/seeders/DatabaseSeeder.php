@@ -2,13 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Appointment;
-use App\Models\Availability;
-use App\Models\Favorite;
-use App\Models\Photo;
-use App\Models\Review;
-use App\Models\Service;
-use App\Models\Testimonial;
+use App\Models\UserAppointment;
+use App\Models\BarberAvailability;
+use App\Models\Barber;
+use App\Models\UserFavorite;
+use App\Models\BarberPhoto;
+use App\Models\BarberReview;
+use App\Models\BarberService;
+use App\Models\BarberTestimonial;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,12 +26,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Barber::factory(5)->create();
-        Appointment::factory(5)->create();
-        Availability::factory(5)->create();
-        Favorite::factory(3)->create();
-        Photo::factory(6)->create();
-        Review::factory(5)->create();
-        Service::factory(7)->create();
-        Testimonial::factory(5)->create();
+        UserAppointment::factory(5)->create();
+        BarberAvailability::factory(5)->create();
+        UserFavorite::factory(3)->create();
+        BarberPhoto::factory(6)->create();
+        BarberReview::factory(5)->create();
+        BarberService::factory(7)->create();
+        BarberTestimonial::factory(5)->create();
     }
 }

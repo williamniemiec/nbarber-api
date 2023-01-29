@@ -2,15 +2,15 @@
 
 namespace Database\Factories;
 
-use App\Models\Appointment;
+use App\Models\UserAppointment;
 use App\Models\Barber;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Appointment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserAppointment>
  */
-class AppointmentFactory extends Factory
+class UserAppointmentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,17 +22,17 @@ class AppointmentFactory extends Factory
         $user = User::all()->random();
         $barber = Barber::all()->random();
         $date = fake()->date();
-        $results = Appointment::where([
+        $results = UserAppointment::where([
             ['id_user', '=', $user->id],
             ['id_barber', '=', $barber->id],
             ['date', '=', $date],
         ]);
 
-        while (count($results) > 0) {
+        while ($results->count() > 0) {
             $user = User::all()->random();
             $barber = Barber::all()->random();
             $date = fake()->date();
-            $results = Appointment::where([
+            $results = UserAppointment::where([
                 ['id_user', '=', $user->id],
                 ['id_barber', '=', $barber->id],
                 ['date', '=', $date],

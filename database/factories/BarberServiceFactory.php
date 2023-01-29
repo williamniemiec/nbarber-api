@@ -3,13 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Barber;
-use App\Models\Service;
+use App\Models\BarberService;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Service>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BarberService>
  */
-class ServiceFactory extends Factory
+class BarberServiceFactory extends Factory
 {
     private $services = [
         'Classic haircut',
@@ -27,15 +27,15 @@ class ServiceFactory extends Factory
     {
         $barber = Barber::all()->random();
         $randomIndex = fake()->numberBetween(0, count($this->services) - 1);
-        $results = Service::where([
+        $results = BarberService::where([
             ['name', '=', $this->services[$randomIndex]],
             ['id_barber', '=', $barber->id],
         ]);
 
-        while (count($results) > 0) {
+        while ($results->count() > 0) {
             $barber = Barber::all()->random();
             $randomIndex = fake()->numberBetween(0, count($this->services) - 1);
-            $results = Service::where([
+            $results = BarberService::where([
                 ['name', '=', $this->services[$randomIndex]],
                 ['id_barber', '=', $barber->id],
             ]);

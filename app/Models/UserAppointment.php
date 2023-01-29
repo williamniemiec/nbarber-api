@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Availability extends Model
+class UserAppointment extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
 
     protected $fillable = [
-        'name',
-        'weekday',
-        'hours',
+        'date',
+        'id_user',
         'id_barber'
     ];
 }

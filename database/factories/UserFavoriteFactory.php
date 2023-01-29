@@ -3,14 +3,14 @@
 namespace Database\Factories;
 
 use App\Models\Barber;
-use App\Models\Favorite;
+use App\Models\UserFavorite;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Foundation\Auth\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Favorite>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserFavorite>
  */
-class FavoriteFactory extends Factory
+class UserFavoriteFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -21,15 +21,15 @@ class FavoriteFactory extends Factory
     {
         $user = User::all()->random();
         $barber = Barber::all()->random();
-        $results = Favorite::where([
+        $results = UserFavorite::where([
             ['id_barber', '=', $barber->id],
             ['id_user', '=', $user->id],
         ]);
 
-        while (count($results) > 0) {
+        while ($results->count() > 0) {
             $user = User::all()->random();
             $barber = Barber::all()->random();
-            $results = Favorite::where([
+            $results = UserFavorite::where([
                 ['id_barber', '=', $barber->id],
                 ['id_user', '=', $user->id],
             ]);

@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\Availability;
+use App\Models\BarberAvailability;
 use App\Models\Barber;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Availability>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BarberAvailability>
  */
-class AvailabilityFactory extends Factory
+class BarberAvailabilityFactory extends Factory
 {
     private $services = [
         'Classic haircut',
@@ -27,18 +27,22 @@ class AvailabilityFactory extends Factory
     {
         $barber = Barber::all()->random();
         $randomIndex = fake()->numberBetween(0, count($this->services) - 1);
-        $results = Availability::where([
+        $weekday = fake()->numberBetween(0, 6);
+        $hours = fake()->numberBetween(1, 8);
+        $results = BarberAvailability::where([
             ['name', '=', $this->services[$randomIndex]],
             ['id_barber', '=', $barber->id],
+            ['weekday', '=', $weekday],
+            ['hours', '=', $hours],
         ]);
 
-        while (count($results) > 0) {
+        while ($results->count() > 0) {
             $barber = Barber::all()->random();
             $randomIndex = fake()->numberBetween(0, count($this->services) - 1);
             $weekday = fake()->numberBetween(0, 6);
             $hours = fake()->numberBetween(1, 8);
 
-            $results = Availability::where([
+            $results = BarberAvailability::where([
                 ['name', '=', $this->services[$randomIndex]],
                 ['weekday', '=', $weekday],
                 ['hours', '=', $hours],

@@ -3,12 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Barber;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Review>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\BarberTestimonial>
  */
-class ReviewFactory extends Factory
+class BarberTestimonialFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,10 +19,14 @@ class ReviewFactory extends Factory
     public function definition()
     {
         $barber = Barber::all()->random();
+        $user = User::all()->random();
 
         return [
+            'title' => fake()->title(),
+            'rate' => fake()->randomFloat(2, 3, 5),
+            'body' => fake()->text(),
             'id_barber' => $barber->id,
-            'rate' => fake()->randomFloat(2, 3, 5)
+            'id_user' => $user->id
         ];
     }
 }
