@@ -112,6 +112,7 @@ class AuthController extends Controller
                 if ($token) {
                     $response['token'] = $token;
                     $response['user'] = auth()->user();
+                    $response['user']['avatar'] = url('media/avatars/' . $response['user']['avatar']);
                 }
                 else {
                     $response['error'] = 'Error on JWT generation';
@@ -119,7 +120,7 @@ class AuthController extends Controller
             }
         }
 
-        return $response;
+        return response()->json($response);
     }
 
     private function hasUserWithEmail(string $email)
