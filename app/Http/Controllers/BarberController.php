@@ -21,6 +21,16 @@ class BarberController extends Controller
         $latitude = $request->input('latitude');
         $longitude = $request->input('longitude');
         $city = $request->input('city');
+        $offset = $request->input('offset');
+        $limit = $request->input('limit');
+
+        if (empty($offset)) {
+            $offset = 0;
+        }
+
+        if (empty($limit)) {
+            $limit = 5;
+        }
 
         if (!empty($city)) {
             $response = $this->searchGeo($city);
@@ -49,6 +59,8 @@ class BarberController extends Controller
                 POW(69.1 * ('.$longitude.' - longitude) * COS(latitude / 57.3), 2)) as distance')
             )
             ->orderBy('distance', 'ASC')
+            ->offset($offset)
+            ->limit($limit)
             ->get();
 
         $array['loc'] = $city;
