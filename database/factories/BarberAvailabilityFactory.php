@@ -17,6 +17,9 @@ class BarberAvailabilityFactory extends Factory
         'Straight razor shave',
         'Kid\'s haircut'
     ];
+    private $hours = [
+        '07:00', '07:30', '08:00', '08:30', '09:00', '09:30', '10:00'
+    ];
 
     /**
      * Define the model's default state.
@@ -28,7 +31,7 @@ class BarberAvailabilityFactory extends Factory
         $barber = Barber::all()->random();
         $randomIndex = fake()->numberBetween(0, count($this->services) - 1);
         $weekday = fake()->numberBetween(0, 6);
-        $hours = fake()->numberBetween(1, 8);
+        $hours = implode(',', $this->hours);
         $results = BarberAvailability::where([
             ['name', '=', $this->services[$randomIndex]],
             ['id_barber', '=', $barber->id],
@@ -40,7 +43,6 @@ class BarberAvailabilityFactory extends Factory
             $barber = Barber::all()->random();
             $randomIndex = fake()->numberBetween(0, count($this->services) - 1);
             $weekday = fake()->numberBetween(0, 6);
-            $hours = fake()->numberBetween(1, 8);
 
             $results = BarberAvailability::where([
                 ['name', '=', $this->services[$randomIndex]],
