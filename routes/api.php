@@ -33,6 +33,7 @@ Route::name('user.')->prefix('/user')->group(function () {
     Route::get('/appointments', [UserController::class, 'getAppointments'])->name('appointments');
     Route::get('/favorites', [UserController::class, 'getFavorites'])->name('favorites');
     Route::post('/favorite', [UserController::class, 'toggleFavorite'])->name('favorite');
+    Route::put('/', [UserController::class, 'update'])->name('update');
 });
 
 Route::name('barber.')->prefix('/barber')->group(function () {

@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barber;
+use App\Models\BarberService;
+use App\Models\User;
+use App\Models\UserAppointment;
 use App\Models\UserFavorite;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -82,5 +86,68 @@ class UserController extends Controller
         }
 
         return response()->json($response);
+    }
+
+    public function getAppointments(Request $request)
+    {
+        $response = ['error' => ''];
+
+        $appointments = [];
+        $rawAppointments = UserAppointment::select()
+            ->where('id_user', $this->loggedUser->id)
+            ->orderBy('date', 'DESC')
+            ->get();
+
+        if ($rawAppointments) {
+            foreach ($rawAppointments as $appointment) {
+                $barber = Barber::find($appointment->id_barber);
+                $barber->avatar = url('media/avatars/' . $barber->avatar);
+
+                $service = BarberService::find($appointment->id_service);
+                $formattedAppointment = [
+                    'id' => $appointment->id,
+                    'date' => $appointment->date,
+                    'barber' => $barber
+                ];
+                $formattedAppointment['service'] = $service;
+
+                $appointments[] = $formattedAppointment;
+            }
+        }
+
+        $response['data'] = $appointments;
+
+
+        return response()->json($response);
+    }
+
+    public function update(Request $request)
+    {
+        $rules = [
+            'name' => 'min:2',
+            'email' => 'email|unique:users',
+            'password' => 'same:password_confirm',
+            'password_confirm' => 'same:password'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return ['error' => $validator->messages()];
+        }
+
+        $data = $validator->validated();
+        $user = User::find($this->loggedUser->id);
+
+        if ($data['name']) {
+            $user->name = $data['name'];
+        }
+
+        if ($data['email']) {
+            $user->email = $data['email'];
+        }
+
+        if ($data['password']) {
+            $user->password = $data['password'];
+        }
     }
 }

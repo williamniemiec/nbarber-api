@@ -256,7 +256,7 @@ class BarberController extends Controller
         $q = $request->input('q');
 
         if (!$q) {
-            return ['error' => 'missing required parameter: \'q\''];
+            return ['error' => 'Missing required parameter: \'q\''];
         }
 
         $barbers = Barber::select()
