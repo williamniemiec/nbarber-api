@@ -248,4 +248,26 @@ class BarberController extends Controller
         $newAppointment->date = $appointmentDate;
         $newAppointment->save();
     }
+
+    public function search(Request $request)
+    {
+        $response = ['error' => ''];
+
+        $q = $request->input('q');
+
+        if (!$q) {
+            return ['error' => 'missing required parameter: \'q\''];
+        }
+
+        $barbers = Barber::select()
+            ->where('name', 'LIKE', '%' . $q . '%')
+            ->get();
+        foreach ($barbers as $barber) {
+            $barber->avatar = url('media/avatars/' . $barber->avatar);
+        }
+
+        $response['data'] = $barbers;
+
+        return response()->json($response);
+    }
 }
