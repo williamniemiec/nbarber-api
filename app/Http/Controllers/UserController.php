@@ -38,7 +38,11 @@ class UserController extends Controller
             $favoriteIds[] = $favorite->id_barber;
         }
         $favorites = array_map(function ($barberId) {
-            return Barber::find($barberId);
+            $barber = Barber::find($barberId);
+
+            $barber->avatar = url('/media/avatars/' . $barber->avatar);
+
+            return $barber;
         }, $favoriteIds);
         $response['data'] = $favorites;
 
