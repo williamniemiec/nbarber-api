@@ -21,7 +21,7 @@ class UserAppointmentFactory extends Factory
     {
         $user = User::all()->random();
         $barber = Barber::all()->random();
-        $date = fake()->date();
+        $date = fake()->dateTimeThisMonth();
         $results = UserAppointment::where([
             ['id_user', '=', $user->id],
             ['id_barber', '=', $barber->id],
