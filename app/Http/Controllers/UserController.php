@@ -9,6 +9,7 @@ use App\Models\UserAppointment;
 use App\Models\UserFavorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -151,5 +152,41 @@ class UserController extends Controller
         }
 
         $user->save();
+    }
+
+    public function uploadAvatar(Request $request)
+    {
+        $rules = [
+            'avatar' => 'required|image|mimes:png,jpg,jpeg'
+        ];
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return ['error' => $validator->messages()];
+        }
+
+        $avatar = $request->file('avatar');
+        $filename = $this->storeAvatar($avatar);
+
+        $user = User::find($this->loggedUser->id);
+        $user->avatar = $filename;
+        $user->save();
+    }
+
+    private function storeAvatar($avatar): string
+    {
+        $destination = public_path('/media/avatars');
+        $filename = $this->generateRandomName() . '.jpg';
+        $img = Image::make($avatar->getRealPath());
+        $img
+            ->fit(300, 300)
+            ->save($destination.'/'.$filename);
+
+        return $filename;
+    }
+
+    private function generateRandomName(): string
+    {
+        return md5(time() . rand(0, 9999));
     }
 }
