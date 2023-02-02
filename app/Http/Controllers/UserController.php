@@ -149,5 +149,7 @@ class UserController extends Controller
         if ($data['password']) {
             $user->password = $data['password'];
         }
+
+        $user->save();
     }
 }
