@@ -8,6 +8,7 @@ use App\Models\BarberPhoto;
 use App\Models\BarberService;
 use App\Models\BarberTestimonial;
 use App\Models\UserAppointment;
+use App\Models\UserFavorite;
 use Illuminate\Http\Request;
 
 class BarberController extends Controller
@@ -103,11 +104,17 @@ class BarberController extends Controller
         if ($barber) {
             $response['data'] = $barber;
             $response['data']['avatar'] = url('media/avatars/' . $barber->avatar);
-            $response['data']['favorited'] = false;
             $response['data']['photos'] = [];
             $response['data']['services'] = BarberService::select(['id', 'name', 'price'])->where('id_barber', $id)->get();
             $response['data']['testimonials'] = BarberTestimonial::select(['id', 'title', 'rate', 'body', 'id_user'])->where('id_barber', $id)->get();
             $response['data']['availability'] = [];
+
+            // Fetches favorited
+            $favorited = UserFavorite::where([
+                ['id_user', '=', $this->loggedUser->id],
+                ['id_barber', '=', $id]
+            ])->count();
+            $response['data']['favorited'] = ($favorited > 0);
 
             // Fetches photos
             $photos = BarberPhoto::select(['id', 'url'])->where('id_barber', $id)->get();

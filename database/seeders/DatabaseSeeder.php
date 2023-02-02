@@ -26,12 +26,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Barber::factory(5)->create();
-        UserAppointment::factory(5)->create();
         BarberAvailability::factory(5)->create();
         UserFavorite::factory(3)->create();
         BarberPhoto::factory(6)->create();
         BarberReview::factory(5)->create();
         BarberService::factory(7)->create();
         BarberTestimonial::factory(5)->create();
+        UserAppointment::factory(5)->create();
     }
 }

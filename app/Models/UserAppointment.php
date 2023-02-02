@@ -14,6 +14,7 @@ class UserAppointment extends Model
     protected $fillable = [
         'date',
         'id_user',
-        'id_barber'
+        'id_barber',
+        'id_service'
     ];
 }

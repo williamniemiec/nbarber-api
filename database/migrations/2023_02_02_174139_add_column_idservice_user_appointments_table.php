@@ -13,14 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('barber_photos', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('id_barber');
-            $table->string('url');
+        Schema::table('user_appointments', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_service');
             $table
-                ->foreign('id_barber')
+                ->foreign('id_service')
                 ->references('id')
-                ->on('barbers')
+                ->on('barber_services')
                 ->cascadeOnDelete();
         });
     }
@@ -32,6 +30,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('barber_photos');
+        Schema::table('user_appointments', function (Blueprint $table) {
+            $table->dropColumn('id_service');
+        });
     }
 };
