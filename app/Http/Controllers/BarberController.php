@@ -5,94 +5,38 @@ namespace App\Http\Controllers;
 use App\Models\Barber;
 use App\Models\BarberAvailability;
 use App\Models\BarberPhoto;
-use App\Models\BarberService;
 use App\Models\BarberTestimonial;
+use App\Models\Dto\BarberSearchDto;
 use App\Models\UserAppointment;
 use App\Models\UserFavorite;
+use App\Services\BarberService;
 use Illuminate\Http\Request;
 
 class BarberController extends Controller
 {
     private $loggedUser;
+    private $barberService;
 
     public function __construct()
     {
         $this->middleware('auth:api');
         $this->loggedUser = auth()->user();
+        $this->barberService = new BarberService();
     }
 
     public function list(Request $request)
     {
-        $array = ['error' => ''];
-        $latitude = $request->input('latitude');
-        $longitude = $request->input('longitude');
-        $city = $request->input('city');
-        $offset = $request->input('offset');
-        $limit = $request->input('limit');
+        $response = $this->barberService->findAll(
+            BarberSearchDto::builder()
+                ->latitude($request->input('latitude'))
+                ->longitude($request->input('longitude'))
+                ->city($request->input('city'))
+                ->offset($request->input('offset'))
+                ->limit($request->input('limit'))
+                ->build()
+        );
 
-        if (empty($offset)) {
-            $offset = 0;
-        }
-
-        if (empty($limit)) {
-            $limit = 5;
-        }
-
-        if (!empty($city)) {
-            $response = $this->searchGeo($city);
-
-            if (count($response['results']) > 0) {
-                $latitude = $response['results'][0]['geometry']['location']['lat'];
-                $longitude = $response['results'][0]['geometry']['location']['lng'];
-            }
-        }
-        else if (!empty($latitude) && !empty($longitude)) {
-            $response = $this->searchGeo($latitude.','.$longitude);
-
-            if (count($response['results']) > 0) {
-                $city = $response['results'][0]['formatted_address'];
-            }
-        }
-        else {
-            $latitude = '-30.0097565';
-            $longitude = '-51.1463625';
-            $city = 'Porto Alegre';
-        }
-
-        $array['data'] = Barber::select(
-            Barber::raw('*, SQRT(
-                POW(69.1 * (latitude - '.$latitude.'), 2) +
-                POW(69.1 * ('.$longitude.' - longitude) * COS(latitude / 57.3), 2)) as distance')
-            )
-            ->orderBy('distance', 'ASC')
-            ->offset($offset)
-            ->limit($limit)
-            ->get();
-
-        $array['loc'] = $city;
-
-        foreach ($array['data'] as $key => $value) {
-            $array['data'][$key]['avatar'] = url('media/avatars/' . $array['data'][$key]['avatar']);
-        }
-
-        return response()->json($array);
-    }
-
-    private function searchGeo($address)
-    {
-        $key = env('GCLOUD_GEOCODING_KEY', null);
-        $url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode($address);
-        $url .= '&key=' . $key;
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $response = curl_exec($ch);
-
-        curl_close($ch);
-
-        return json_decode($response, true);
+        return response()->json($response);
     }
 
     public function get(Request $request)
@@ -105,7 +49,7 @@ class BarberController extends Controller
             $response['data'] = $barber;
             $response['data']['avatar'] = url('media/avatars/' . $barber->avatar);
             $response['data']['photos'] = [];
-            $response['data']['services'] = BarberService::select(['id', 'name', 'price'])->where('id_barber', $id)->get();
+            $response['data']['services'] = \App\Models\BarberService::select(['id', 'name', 'price'])->where('id_barber', $id)->get();
             $response['data']['testimonials'] = BarberTestimonial::select(['id', 'title', 'rate', 'body', 'id_user'])->where('id_barber', $id)->get();
             $response['data']['availability'] = [];
 
