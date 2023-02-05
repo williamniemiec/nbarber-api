@@ -7,17 +7,17 @@ class BarberSearchDto
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private float $latitude;
-    private float $longitude;
-    private string $city;
-    private int $offset;
-    private int $limit;
+    private ?float $latitude;
+    private ?float $longitude;
+    private ?string $city;
+    private ?int $offset;
+    private ?int $limit;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    protected function __construct(
+    public function __construct(
         $latitude,
         $longitude,
         $city,
@@ -40,11 +40,11 @@ class BarberSearchDto
     {
         return new class
         {
-            private float $_latitude;
-            private float $_longitude;
-            private string $_city;
-            private int $_offset;
-            private int $_limit;
+            private ?float $_latitude;
+            private ?float $_longitude;
+            private ?string $_city;
+            private ?int $_offset;
+            private ?int $_limit;
 
             public function latitude($value)
             {
@@ -90,8 +90,9 @@ class BarberSearchDto
     }
 
 
+
     // ------------------------------------------------------------------------
-    //         Methods
+    //         Getters
     // ------------------------------------------------------------------------
     public function getLatitude()
     {

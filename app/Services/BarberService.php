@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Barber;
 use App\Models\Dto\BarberSearchDto;
+use App\Models\Dto\BarberSearchResultDto;
+use InvalidArgumentException;
 
 /**
  * Responsible for providing barber services.
@@ -27,9 +30,8 @@ class BarberService
     // ------------------------------------------------------------------------
     //         Methods
     // ------------------------------------------------------------------------
-    public function findAll(BarberSearchDto $barberSearch)
+    public function findAll(BarberSearchDto $barberSearch): BarberSearchResultDto
     {
-        $response = ['error' => ''];
         $latitude = $barberSearch->getLatitude();
         $longitude = $barberSearch->getLongitude();
         $city = $barberSearch->getCity();
@@ -38,7 +40,7 @@ class BarberService
             $geolocation = $this->geolocationService->getGeolocation($city);
 
             if (!$geolocation) {
-                $response['error'] = 'Address not found';
+                throw new InvalidArgumentException('Address not found');
             }
             $latitude = $geolocation->getLatitude();
             $longitude = $geolocation->getLongitude();
@@ -47,7 +49,7 @@ class BarberService
             $city = $this->geolocationService->getAddress($latitude, $longitude);
 
             if (!$city) {
-                $response['error'] = 'Latitude and longitude not found';
+                throw new InvalidArgumentException('Invalid latitude and / or longitude');
             }
         }
         else {
@@ -56,15 +58,14 @@ class BarberService
             $city = 'Porto Alegre';
         }
 
-        $response['data'] = $this->findBarbersByLocation(
+        $barbers = $this->findBarbersByLocation(
             $latitude,
             $longitude,
             $barberSearch->getOffset(),
             $barberSearch->getLimit()
         );
-        $response['loc'] = $city;
 
-        return $response;
+        return new BarberSearchResultDto($barbers, $city);
     }
 
     private function findBarbersByLocation($latitude, $longitude, $offset, $limit)
@@ -78,7 +79,8 @@ class BarberService
             ->orderBy('distance', 'ASC')
             ->offset(empty($offset) ? 0 : $offset)
             ->limit(empty($limit) ? 5 : $limit)
-            ->get();
+            ->get()
+            ->toArray();
 
         foreach ($barbers as $key => $value) {
             $barbers[$key]['avatar'] = url('media/avatars/' . $barbers[$key]['avatar']);
