@@ -10,7 +10,9 @@ use App\Models\Dto\BarberSearchDto;
 use App\Models\UserAppointment;
 use App\Models\UserFavorite;
 use App\Services\BarberService;
+use App\Utils\ParameterValidator;
 use Illuminate\Http\Request;
+use InvalidArgumentException;
 
 class BarberController extends Controller
 {
@@ -195,22 +197,10 @@ class BarberController extends Controller
 
     public function search(Request $request)
     {
-        $response = ['error' => ''];
-
         $q = $request->input('q');
+        ParameterValidator::validateRequiredParameter($q, 'q');
 
-        if (!$q) {
-            return ['error' => 'Missing required parameter: \'q\''];
-        }
-
-        $barbers = Barber::select()
-            ->where('name', 'LIKE', '%' . $q . '%')
-            ->get();
-        foreach ($barbers as $barber) {
-            $barber->avatar = url('media/avatars/' . $barber->avatar);
-        }
-
-        $response['data'] = $barbers;
+        $response = $this->barberService->search($q);
 
         return response()->json($response);
     }

@@ -82,9 +82,26 @@ class BarberService
             ->get()
             ->toArray();
 
-        foreach ($barbers as $key => $value) {
-            $barbers[$key]['avatar'] = url('media/avatars/' . $barbers[$key]['avatar']);
+        $this->completeAvatarUrls($barbers);
+
+        return $barbers;
+    }
+
+    private function completeAvatarUrls(array $barbers): void
+    {
+        foreach ($barbers as $barber) {
+            $barber->avatar = url('media/avatars/' . $barber->avatar);
         }
+    }
+
+    public function search(string $term): array
+    {
+        $barbers = Barber::select()
+            ->where('name', 'LIKE', '%' . $term . '%')
+            ->get()
+            ->toArray();
+
+        $this->completeAvatarUrls($barbers);
 
         return $barbers;
     }
