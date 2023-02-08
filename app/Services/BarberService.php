@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\ObjectNotFoundException;
 use App\Models\Barber;
 use App\Models\Dto\BarberSearchDto;
 use App\Models\Dto\BarberSearchResultDto;
@@ -82,16 +83,21 @@ class BarberService
             ->get()
             ->toArray();
 
-        $this->completeAvatarUrls($barbers);
+        $this->completeAvatarsUrl($barbers);
 
         return $barbers;
     }
 
-    private function completeAvatarUrls(array $barbers): void
+    private function completeAvatarsUrl(array $barbers): void
     {
         foreach ($barbers as $barber) {
-            $barber->avatar = url('media/avatars/' . $barber->avatar);
+            $this->completeAvatarUrl($barber);
         }
+    }
+
+    private function completeAvatarUrl(Barber $barber): void
+    {
+        $barber->avatar = url('media/avatars/' . $barber->avatar);
     }
 
     public function search(string $term): array
@@ -101,8 +107,21 @@ class BarberService
             ->get()
             ->toArray();
 
-        $this->completeAvatarUrls($barbers);
+        $this->completeAvatarsUrl($barbers);
 
         return $barbers;
+    }
+
+    public function findById($id): Barber
+    {
+        $barber = Barber::find($id);
+
+        if (!$barber) {
+            throw new ObjectNotFoundException($id);
+        }
+
+        $this->completeAvatarUrl($barber);
+
+        return $barber;
     }
 }

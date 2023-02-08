@@ -43,90 +43,84 @@ class BarberController extends Controller
 
     public function get(Request $request)
     {
-        $response = ['error' => ''];
-        $id = $request->id;
-        $barber = Barber::find($id);
+        $id = $request->input('id');
+        ParameterValidator::validateRequiredParameter($id, 'id');
+        $barber = $this->barberService->findById($id);
 
-        if ($barber) {
-            $response['data'] = $barber;
-            $response['data']['avatar'] = url('media/avatars/' . $barber->avatar);
-            $response['data']['photos'] = [];
-            $response['data']['services'] = \App\Models\BarberService::select(['id', 'name', 'price'])->where('id_barber', $id)->get();
-            $response['data']['testimonials'] = BarberTestimonial::select(['id', 'title', 'rate', 'body', 'id_user'])->where('id_barber', $id)->get();
-            $response['data']['availability'] = [];
+        $response['data'] = $barber;
 
-            // Fetches favorited
-            $favorited = UserFavorite::where([
-                ['id_user', '=', $this->loggedUser->id],
-                ['id_barber', '=', $id]
-            ])->count();
-            $response['data']['favorited'] = ($favorited > 0);
+        $response['data']['services'] = \App\Models\BarberService::select(['id', 'name', 'price'])->where('id_barber', $id)->get();
+        $response['data']['testimonials'] = BarberTestimonial::select(['id', 'title', 'rate', 'body', 'id_user'])->where('id_barber', $id)->get();
 
-            // Fetches photos
-            $photos = BarberPhoto::select(['id', 'url'])->where('id_barber', $id)->get();
-            foreach ($photos as $key => $value) {
-                $photos[$key]['url'] = url('media/uploads/'.$value);
-            }
-            if (!empty($photos)) {
-                $response['data']['photos'] = $photos;
-            }
 
-            // Fetches availability
-            /// 1. Get work hours by weekday
-            $workDays = BarberAvailability::select(['id', 'name', 'weekday', 'hours'])->where('id_barber', $id)->get();
-            $workDaysByWeekday = [];
-            foreach ($workDays as $workDay) {
-                $workDaysByWeekday[$workDay->weekday] = explode(',', $workDay->hours);
-            }
+        // Fetches favorited
+        $favorited = UserFavorite::where([
+            ['id_user', '=', $this->loggedUser->id],
+            ['id_barber', '=', $id]
+        ])->count();
+        $response['data']['favorited'] = ($favorited > 0);
 
-            /// 2. Get appointments
-            $appointments = [];
-            $appointmentsQuery = UserAppointment::where('id_barber', $id)
-                ->whereBetween('date', [
-                    date('Y-m-d').' 00:00:00',
-                    date('Y-m-d', strtotime('+20 days')).' 23:59:59'
-                ])
-                ->get();
-            foreach ($appointmentsQuery as $appointmentQuery) {
-                $appointments[] = $appointmentQuery->date;
-            }
+        // Fetches photos
+        $response['data']['photos'] = [];
+        $photos = BarberPhoto::select(['id', 'url'])->where('id_barber', $id)->get();
+        foreach ($photos as $key => $value) {
+            $photos[$key]['url'] = url('media/uploads/'.$value);
+        }
+        if (!empty($photos)) {
+            $response['data']['photos'] = $photos;
+        }
 
-            /// 3. Get available hours from now until 20 days after it.
-            $availability = [];
-            for ($day = 0; $day < 20; $day++) {
-                $currentTime = strtotime('+' . $day . ' days');
-                $currentWeekday = date('w', $currentTime);
+        // Fetches availability
+        $response['data']['availability'] = [];
+        /// 1. Get work hours by weekday
+        $workDays = BarberAvailability::select(['id', 'name', 'weekday', 'hours'])->where('id_barber', $id)->get();
+        $workDaysByWeekday = [];
+        foreach ($workDays as $workDay) {
+            $workDaysByWeekday[$workDay->weekday] = explode(',', $workDay->hours);
+        }
 
-                // if the barber has work hours in the current weekday
-                if (in_array($currentWeekday, array_keys($workDaysByWeekday))) {
-                    $availableHours = [];
-                    $formattedDay = date('Y-m-d', $currentTime);
+        /// 2. Get appointments
+        $appointments = [];
+        $appointmentsQuery = UserAppointment::where('id_barber', $id)
+            ->whereBetween('date', [
+                date('Y-m-d').' 00:00:00',
+                date('Y-m-d', strtotime('+20 days')).' 23:59:59'
+            ])
+            ->get();
+        foreach ($appointmentsQuery as $appointmentQuery) {
+            $appointments[] = $appointmentQuery->date;
+        }
 
-                    foreach ($workDaysByWeekday[$currentWeekday] as $hour) {
-                        $formattedDateTime = $formattedDay . ' ' . $hour . ':00';
+        /// 3. Get available hours from now until 20 days after it.
+        $availability = [];
+        for ($day = 0; $day < 20; $day++) {
+            $currentTime = strtotime('+' . $day . ' days');
+            $currentWeekday = date('w', $currentTime);
 
-                        // if the barber does not have appointments in the current hour
-                        if (!in_array($formattedDateTime, $appointments)) {
-                            $availableHours[] = $hour;
-                        }
-                    }
+            // if the barber has work hours in the current weekday
+            if (in_array($currentWeekday, array_keys($workDaysByWeekday))) {
+                $availableHours = [];
+                $formattedDay = date('Y-m-d', $currentTime);
 
-                    if (!empty($availableHours)) {
-                        $availability = [
-                            'date' => $formattedDay,
-                            'hours' => $availableHours
-                        ];
+                foreach ($workDaysByWeekday[$currentWeekday] as $hour) {
+                    $formattedDateTime = $formattedDay . ' ' . $hour . ':00';
+
+                    // if the barber does not have appointments in the current hour
+                    if (!in_array($formattedDateTime, $appointments)) {
+                        $availableHours[] = $hour;
                     }
                 }
-            }
-            if (!empty($availability)) {
-                $response['data']['availability'] = $availability;
-            }
 
-
+                if (!empty($availableHours)) {
+                    $availability = [
+                        'date' => $formattedDay,
+                        'hours' => $availableHours
+                    ];
+                }
+            }
         }
-        else {
-            $response['error'] = 'Barber not found';
+        if (!empty($availability)) {
+            $response['data']['availability'] = $availability;
         }
 
 
