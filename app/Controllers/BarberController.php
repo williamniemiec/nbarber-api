@@ -2,28 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barber;
 use App\Models\BarberAvailability;
 use App\Models\BarberPhoto;
 use App\Models\BarberTestimonial;
 use App\Models\Dto\BarberSearchDto;
 use App\Models\UserAppointment;
 use App\Models\UserFavorite;
+use App\Services\BarberPhotoService;
 use App\Services\BarberService;
 use App\Utils\ParameterValidator;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
-use InvalidArgumentException;
 
 class BarberController extends Controller
 {
-    private $loggedUser;
-    private $barberService;
+    private readonly Authenticatable $loggedUser;
+    private readonly BarberService $barberService;
+    private readonly BarberPhotoService $barberPhotoService;
 
     public function __construct()
     {
         $this->middleware('auth:api');
         $this->loggedUser = auth()->user();
         $this->barberService = new BarberService();
+        $this->barberPhotoService = new BarberPhotoService();
     }
 
     public function list(Request $request)
@@ -61,14 +63,7 @@ class BarberController extends Controller
         $response['data']['favorited'] = ($favorited > 0);
 
         // Fetches photos
-        $response['data']['photos'] = [];
-        $photos = BarberPhoto::select(['id', 'url'])->where('id_barber', $id)->get();
-        foreach ($photos as $key => $value) {
-            $photos[$key]['url'] = url('media/uploads/'.$value);
-        }
-        if (!empty($photos)) {
-            $response['data']['photos'] = $photos;
-        }
+        $response['data']['photos'] = $this->barberPhotoService->findAllByBarberId($id);
 
         // Fetches availability
         $response['data']['availability'] = [];
