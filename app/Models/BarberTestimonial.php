@@ -18,4 +18,9 @@ class BarberTestimonial extends Model
         'id_barber',
         'id_user'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('user', 'id_user', 'id');
+    }
 }

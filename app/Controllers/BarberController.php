@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BarberAvailability;
 use App\Models\BarberPhoto;
 use App\Models\BarberTestimonial;
+use App\Models\Dto\BarberDto;
 use App\Models\Dto\BarberSearchDto;
 use App\Models\UserAppointment;
 use App\Models\UserFavorite;
@@ -12,6 +13,7 @@ use App\Services\BarberAvailabilityService;
 use App\Services\BarberPhotoService;
 use App\Services\BarberService;
 use App\Services\BarberServicesService;
+use App\Services\BarberTestimonialService;
 use App\Services\UserService;
 use App\Utils\ParameterValidator;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -24,6 +26,7 @@ class BarberController extends Controller
     private readonly BarberPhotoService $barberPhotoService;
     private readonly BarberAvailabilityService $availabilityService;
     private readonly BarberServicesService $barberServicesService;
+    private readonly BarberTestimonialService $testimonialService;
     private readonly UserService $userService;
 
     public function __construct()
@@ -34,6 +37,7 @@ class BarberController extends Controller
         $this->barberPhotoService = new BarberPhotoService();
         $this->availabilityService = new BarberAvailabilityService();
         $this->barberServicesService = new BarberServicesService();
+        $this->testimonialService = new BarberTestimonialService();
         $this->userService = new UserService();
     }
 
@@ -57,14 +61,16 @@ class BarberController extends Controller
         $id = $request->input('id');
         ParameterValidator::validateRequiredParameter($id, 'id');
 
-        $response['data'] = $this->barberService->findById($id);
-        $response['data']['services'] = $this->barberServicesService->findAllByBarberId($id);
-        $response['data']['testimonials'] = BarberTestimonial::select(['id', 'title', 'rate', 'body', 'id_user'])->where('id_barber', $id)->get();
-        $response['data']['favorited'] = $this->userService->hasFavorited($id);
-        $response['data']['photos'] = $this->barberPhotoService->findAllByBarberId($id);
-        $response['data']['availability'] = $this->availabilityService->findAvailability($id);
+        $barber = BarberDto::builder()
+            ->barber($this->barberService->findById($id))
+            ->services($this->barberServicesService->findAllByBarberId($id))
+            ->testimonials($this->testimonialService->findAllByBarberId($id))
+            ->favorited($this->userService->hasFavorited($id))
+            ->photos($this->barberPhotoService->findAllByBarberId($id))
+            ->availability($this->availabilityService->findAvailability($id))
+            ->build();
 
-        return response()->json($response);
+        return response()->json($barber);
     }
 
     public function insertAppointment($id, Request $request)
