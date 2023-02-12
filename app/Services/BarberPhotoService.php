@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Services;
+
 use App\Models\BarberPhoto;
 use App\Models\Dto\BarberPhotoDto;
 
 /**
- * Responsible for providing barber services.
+ * Responsible for providing barber photo services.
  */
 class BarberPhotoService
 {

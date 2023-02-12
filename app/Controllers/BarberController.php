@@ -8,6 +8,7 @@ use App\Models\BarberTestimonial;
 use App\Models\Dto\BarberSearchDto;
 use App\Models\UserAppointment;
 use App\Models\UserFavorite;
+use App\Services\BarberAvailabilityService;
 use App\Services\BarberPhotoService;
 use App\Services\BarberService;
 use App\Utils\ParameterValidator;
@@ -19,6 +20,7 @@ class BarberController extends Controller
     private readonly Authenticatable $loggedUser;
     private readonly BarberService $barberService;
     private readonly BarberPhotoService $barberPhotoService;
+    private readonly BarberAvailabilityService $availabilityService;
 
     public function __construct()
     {
@@ -26,6 +28,7 @@ class BarberController extends Controller
         $this->loggedUser = auth()->user();
         $this->barberService = new BarberService();
         $this->barberPhotoService = new BarberPhotoService();
+        $this->availabilityService = new BarberAvailabilityService();
     }
 
     public function list(Request $request)
@@ -62,62 +65,8 @@ class BarberController extends Controller
         ])->count();
         $response['data']['favorited'] = ($favorited > 0);
 
-        // Fetches photos
         $response['data']['photos'] = $this->barberPhotoService->findAllByBarberId($id);
-
-        // Fetches availability
-        $response['data']['availability'] = [];
-        /// 1. Get work hours by weekday
-        $workDays = BarberAvailability::select(['id', 'name', 'weekday', 'hours'])->where('id_barber', $id)->get();
-        $workDaysByWeekday = [];
-        foreach ($workDays as $workDay) {
-            $workDaysByWeekday[$workDay->weekday] = explode(',', $workDay->hours);
-        }
-
-        /// 2. Get appointments
-        $appointments = [];
-        $appointmentsQuery = UserAppointment::where('id_barber', $id)
-            ->whereBetween('date', [
-                date('Y-m-d').' 00:00:00',
-                date('Y-m-d', strtotime('+20 days')).' 23:59:59'
-            ])
-            ->get();
-        foreach ($appointmentsQuery as $appointmentQuery) {
-            $appointments[] = $appointmentQuery->date;
-        }
-
-        /// 3. Get available hours from now until 20 days after it.
-        $availability = [];
-        for ($day = 0; $day < 20; $day++) {
-            $currentTime = strtotime('+' . $day . ' days');
-            $currentWeekday = date('w', $currentTime);
-
-            // if the barber has work hours in the current weekday
-            if (in_array($currentWeekday, array_keys($workDaysByWeekday))) {
-                $availableHours = [];
-                $formattedDay = date('Y-m-d', $currentTime);
-
-                foreach ($workDaysByWeekday[$currentWeekday] as $hour) {
-                    $formattedDateTime = $formattedDay . ' ' . $hour . ':00';
-
-                    // if the barber does not have appointments in the current hour
-                    if (!in_array($formattedDateTime, $appointments)) {
-                        $availableHours[] = $hour;
-                    }
-                }
-
-                if (!empty($availableHours)) {
-                    $availability = [
-                        'date' => $formattedDay,
-                        'hours' => $availableHours
-                    ];
-                }
-            }
-        }
-        if (!empty($availability)) {
-            $response['data']['availability'] = $availability;
-        }
-
+        $response['data']['availability'] = $this->availabilityService->findAvailability($id);
 
         return response()->json($response);
     }
