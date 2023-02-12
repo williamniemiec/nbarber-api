@@ -4,7 +4,7 @@ namespace App\Models\Dto;
 
 use App\Models\BarberService;
 
-class BarberServiceDto
+class BarberServiceDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
@@ -22,6 +22,25 @@ class BarberServiceDto
         $this->id = $service->id;
         $this->name = $service->name;
         $this->price = $service->price;
+    }
+
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'price' => $this->price
+        );
     }
 
 

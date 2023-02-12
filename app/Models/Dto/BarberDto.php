@@ -2,7 +2,7 @@
 
 namespace App\Models\Dto;
 
-class BarberDto
+class BarberDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
@@ -108,6 +108,31 @@ class BarberDto
         };
     }
 
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'name' => $this->name,
+            'avatar' => $this->avatar,
+            'stars' => $this->stars,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'services' => json_encode($this->services),
+            'testimonials' => json_encode($this->testimonials),
+            'favorited' => $this->favorited,
+            'photos' => json_encode($this->photos),
+            'availability' => json_encode($this->availability)
+        );
+    }
 
 
     // ------------------------------------------------------------------------

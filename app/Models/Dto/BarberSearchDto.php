@@ -2,7 +2,7 @@
 
 namespace App\Models\Dto;
 
-class BarberSearchDto
+class BarberSearchDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
@@ -89,6 +89,26 @@ class BarberSearchDto
         };
     }
 
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude,
+            'city' => $this->city,
+            'offset' => $this->offset,
+            'limit' => $this->limit
+        );
+    }
 
 
     // ------------------------------------------------------------------------

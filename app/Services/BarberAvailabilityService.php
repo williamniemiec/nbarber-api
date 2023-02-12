@@ -129,4 +129,15 @@ class BarberAvailabilityService
 
         return ($availability != null);
     }
+
+    public function hasAvailabilityOnWeekdayAtHour($weekday, $hour, $barberId): bool
+    {
+        $availability = BarberAvailability::select()
+            ->where('id_barber', $barberId)
+            ->where('weekday', $weekday)
+            ->first();
+        $hours = explode(',', $availability->hours);
+
+        return in_array($hour.':00', $hours);
+    }
 }

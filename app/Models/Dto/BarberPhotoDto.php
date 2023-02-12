@@ -4,7 +4,7 @@ namespace App\Models\Dto;
 
 use App\Models\BarberPhoto;
 
-class BarberPhotoDto
+class BarberPhotoDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
@@ -20,6 +20,24 @@ class BarberPhotoDto
     {
         $this->id = $photo->id;
         $this->url = $photo->url;
+    }
+
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'id' => $this->id,
+            'url' => $this->url
+        );
     }
 
 

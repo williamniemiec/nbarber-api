@@ -4,7 +4,7 @@ namespace App\Models\Dto;
 
 use App\Models\User;
 
-class UserDto
+class UserDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
@@ -24,6 +24,26 @@ class UserDto
         $this->name = $user->name;
         $this->avatar = $user->avatar;
         $this->email = $user->email;
+    }
+
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'avatar' => $this->avatar,
+            'email' => $this->email
+        );
     }
 
 

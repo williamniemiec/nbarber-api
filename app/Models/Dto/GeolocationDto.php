@@ -2,7 +2,7 @@
 
 namespace App\Models\Dto;
 
-class Geolocation
+class Geolocation implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
@@ -18,6 +18,24 @@ class Geolocation
     {
         $this->latitude = $latitude;
         $this->longitude = $longitude;
+    }
+
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude
+        );
     }
 
 

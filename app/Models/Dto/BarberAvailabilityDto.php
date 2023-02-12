@@ -2,7 +2,7 @@
 
 namespace App\Models\Dto;
 
-class BarberAvailabilityDto
+class BarberAvailabilityDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
@@ -18,6 +18,24 @@ class BarberAvailabilityDto
     {
         $this->date = $date;
         $this->hours = $hours;
+    }
+
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'date' => $this->date,
+            'hours' => $this->hours
+        );
     }
 
 

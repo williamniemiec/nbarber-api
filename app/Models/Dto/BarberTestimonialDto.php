@@ -4,7 +4,7 @@ namespace App\Models\Dto;
 
 use App\Models\BarberTestimonial;
 
-class BarberTestimonialDto
+class BarberTestimonialDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
@@ -26,6 +26,27 @@ class BarberTestimonialDto
         $this->rate = $testimonial->rate;
         $this->body = $testimonial->body;
         $this->user = new UserDto($testimonial->user);
+    }
+
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'id' => $this->id,
+            'title' => $this->title,
+            'rate' => $this->rate,
+            'body' => $this->body,
+            'user' => json_encode($this->user)
+        );
     }
 
 
