@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BarberAvailability;
-use App\Models\BarberPhoto;
-use App\Models\BarberTestimonial;
 use App\Models\Dto\BarberDto;
 use App\Models\Dto\BarberSearchDto;
 use App\Models\UserAppointment;
-use App\Models\UserFavorite;
 use App\Services\BarberAvailabilityService;
 use App\Services\BarberPhotoService;
 use App\Services\BarberService;
@@ -21,6 +17,9 @@ use Illuminate\Http\Request;
 
 class BarberController extends Controller
 {
+    // ------------------------------------------------------------------------
+    //         Attributes
+    // ------------------------------------------------------------------------
     private readonly Authenticatable $loggedUser;
     private readonly BarberService $barberService;
     private readonly BarberPhotoService $barberPhotoService;
@@ -29,6 +28,10 @@ class BarberController extends Controller
     private readonly BarberTestimonialService $testimonialService;
     private readonly UserService $userService;
 
+
+    // ------------------------------------------------------------------------
+    //         Constructor
+    // ------------------------------------------------------------------------
     public function __construct()
     {
         $this->middleware('auth:api');
@@ -41,6 +44,10 @@ class BarberController extends Controller
         $this->userService = new UserService();
     }
 
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
     public function list(Request $request)
     {
         $response = $this->barberService->findAll(
@@ -75,64 +82,72 @@ class BarberController extends Controller
 
     public function insertAppointment($id, Request $request)
     {
-        $array = ['error' => ''];
         $service = $request->input('service');
         $year = intval($request->input('year'));
         $month = intval($request->input('month'));
         $day = intval($request->input('day'));
         $hour = intval($request->input('hour'));
+        $appointmentDate = $this->buildAppointmentDate($day, $month, $year, $hour);
 
-        $month = ($month < 10) ? '0' . $month : $month;
-        $day = ($day < 10) ? '0' . $day : $day;
-        $hour = ($hour < 10) ? '0' . $hour : $hour;
+        $this->validateServiceExists($service, $id);
+        $this->validateDate($appointmentDate);
+        $this->validateBarberHasAvailability($appointmentDate, $id);
+        $this->validateBarberWorksOnProvidedDate($appointmentDate, $hour, $id);
 
-        // check if barber service exists
-        $barberService = BarberService::select()
-            ->where('id', $service)
-            ->where('id_barber', $id)
-            ->first();
-        if (!$barberService) {
-            return ['error' => 'This service does not exist'];
-        }
-
-        // check if date is valid
-        $appointmentDate = $year . '-' . $month . '-' . $day . ' ' . $hour . ':00:00';
-        if (!strtotime($appointmentDate)) {
-            return ['error' => 'Invalid date'];
-        }
-
-        // check if barber has availability in the provided date
-        $appointment = UserAppointment::select()
-            ->where('id_barber', $id)
-            ->where('date', $appointmentDate)
-            ->count();
-        if ($appointment > 0) {
-            return ['error' => 'The barber has already an appointment in this date'];
-        }
-
-        // check if barber's workdays include the provided date
-        $weekday = date('w', strtotime($appointmentDate));
-        $availabilities = BarberAvailability::select()
-            ->where('id_barber', $id)
-            ->where('weekday', $weekday)
-            ->first();
-        if (!$availabilities) {
-            return ['error' => 'The barber does not work on this day'];
-        }
-
-        // check if barber works at the requested hour
-        $hours = explode(',', $availabilities->hours);
-        if (!in_array($hour.':00', $hours)) {
-            return ['error' => 'The barber does not work at this hour'];
-        }
-
-        // do appointment
         $newAppointment = new UserAppointment();
         $newAppointment->id_user = $this->loggedUser->id;
         $newAppointment->id_barber = $id;
         $newAppointment->id_service = $service;
         $newAppointment->date = $appointmentDate;
         $newAppointment->save();
+    }
+
+    private function buildAppointmentDate($day, $month, $year, $hour)
+    {
+        $month = ($month < 10) ? '0' . $month : $month;
+        $day = ($day < 10) ? '0' . $day : $day;
+        $hour = ($hour < 10) ? '0' . $hour : $hour;
+
+        return $year . '-' . $month . '-' . $day . ' ' . $hour . ':00:00';
+    }
+
+    private function validateDate($date)
+    {
+        if (!strtotime($date)) {
+            return response()->json(['error' => 'Invalid date']);
+        }
+    }
+
+    private function validateServiceExists($service, $barberId)
+    {
+        if (!$this->barberServicesService->hasService($service, $barberId)) {
+            return response()->json(['error' => 'This service does not exist']);
+        }
+    }
+
+    private function validateBarberHasAvailability($date, $barberId)
+    {
+        $appointment = UserAppointment::select()
+            ->where('id_barber', $barberId)
+            ->where('date', $date)
+            ->count();
+
+        if ($appointment > 0) {
+            return ['error' => 'The barber has already an appointment in this date'];
+        }
+    }
+
+    private function validateBarberWorksOnProvidedDate($date, $hour, $barberId)
+    {
+        $weekday = date('w', strtotime($date));
+
+        if (!$this->availabilityService->hasAvailabilityOnWeekday($weekday, $barberId)) {
+            return ['error' => 'The barber does not work on this day'];
+        }
+
+        if (!$this->availabilityService->hasAvailabilityOnWeekdayAtHour($weekday, $hour, $barberId)) {
+            return ['error' => 'The barber does not work at this hour'];
+        }
     }
 
     public function search(Request $request)

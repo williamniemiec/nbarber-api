@@ -22,4 +22,14 @@ class BarberServicesService
 
         return array_map(fn($service) => new BarberServiceDto($service), $services);
     }
+
+    public function hasService($serviceId, $barberId): bool
+    {
+        $service = BarberService::select()
+            ->where('id', $serviceId)
+            ->where('id_barber', $barberId)
+            ->first();
+
+        return ($service != null);
+    }
 }
