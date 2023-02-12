@@ -11,6 +11,7 @@ use App\Models\UserFavorite;
 use App\Services\BarberAvailabilityService;
 use App\Services\BarberPhotoService;
 use App\Services\BarberService;
+use App\Services\BarberServicesService;
 use App\Services\UserService;
 use App\Utils\ParameterValidator;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -22,7 +23,7 @@ class BarberController extends Controller
     private readonly BarberService $barberService;
     private readonly BarberPhotoService $barberPhotoService;
     private readonly BarberAvailabilityService $availabilityService;
-
+    private readonly BarberServicesService $barberServicesService;
     private readonly UserService $userService;
 
     public function __construct()
@@ -32,6 +33,7 @@ class BarberController extends Controller
         $this->barberService = new BarberService();
         $this->barberPhotoService = new BarberPhotoService();
         $this->availabilityService = new BarberAvailabilityService();
+        $this->barberServicesService = new BarberServicesService();
         $this->userService = new UserService();
     }
 
@@ -56,7 +58,7 @@ class BarberController extends Controller
         ParameterValidator::validateRequiredParameter($id, 'id');
 
         $response['data'] = $this->barberService->findById($id);
-        $response['data']['services'] = \App\Models\BarberService::select(['id', 'name', 'price'])->where('id_barber', $id)->get();
+        $response['data']['services'] = $this->barberServicesService->findAllByBarberId($id);
         $response['data']['testimonials'] = BarberTestimonial::select(['id', 'title', 'rate', 'body', 'id_user'])->where('id_barber', $id)->get();
         $response['data']['favorited'] = $this->userService->hasFavorited($id);
         $response['data']['photos'] = $this->barberPhotoService->findAllByBarberId($id);
