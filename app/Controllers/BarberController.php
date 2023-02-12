@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dto\BarberDto;
 use App\Models\Dto\BarberSearchDto;
 use App\Models\UserAppointment;
+use App\Services\AuthService;
 use App\Services\BarberAvailabilityService;
 use App\Services\BarberPhotoService;
 use App\Services\BarberService;
@@ -12,7 +13,6 @@ use App\Services\BarberServicesService;
 use App\Services\BarberTestimonialService;
 use App\Services\UserService;
 use App\Utils\ParameterValidator;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
 
 class BarberController extends Controller
@@ -20,7 +20,7 @@ class BarberController extends Controller
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private readonly Authenticatable $loggedUser;
+    private readonly AuthService $authService;
     private readonly BarberService $barberService;
     private readonly BarberPhotoService $barberPhotoService;
     private readonly BarberAvailabilityService $availabilityService;
@@ -35,7 +35,7 @@ class BarberController extends Controller
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->loggedUser = auth()->user();
+        $this->authService = new AuthService();
         $this->barberService = new BarberService();
         $this->barberPhotoService = new BarberPhotoService();
         $this->availabilityService = new BarberAvailabilityService();
@@ -95,7 +95,7 @@ class BarberController extends Controller
         $this->validateBarberWorksOnProvidedDate($appointmentDate, $hour, $id);
 
         $newAppointment = new UserAppointment();
-        $newAppointment->id_user = $this->loggedUser->id;
+        $newAppointment->id_user = $this->authService->getAuthenticatedUser()->id;
         $newAppointment->id_barber = $id;
         $newAppointment->id_service = $service;
         $newAppointment->date = $appointmentDate;
