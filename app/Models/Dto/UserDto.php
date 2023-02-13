@@ -9,21 +9,72 @@ class UserDto implements \JsonSerializable
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private readonly int $id;
-    private readonly string $name;
-    private readonly string $avatar;
-    private readonly string $email;
+    private readonly ?int $id;
+    private readonly ?string $name;
+    private readonly ?string $avatar;
+    private readonly ?string $email;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(User $user)
+    public function __construct(?User $user)
     {
         $this->id = $user->id;
         $this->name = $user->name;
         $this->avatar = $user->avatar;
         $this->email = $user->email;
+    }
+
+
+    // ------------------------------------------------------------------------
+    //         Builder
+    // ------------------------------------------------------------------------
+    public static function builder()
+    {
+        return new class
+        {
+            private ?int $_id;
+            private ?string $_name;
+            private ?string $_email;
+            private ?string $_avatar;
+
+            public function id($value)
+            {
+                $this->_id = $value;
+                return $this;
+            }
+
+            public function name($value)
+            {
+                $this->_name = $value;
+                return $this;
+            }
+
+            public function email($value)
+            {
+                $this->_email = $value;
+                return $this;
+            }
+
+            public function avatar($value)
+            {
+                $this->_avatar = $value;
+                return $this;
+            }
+
+            public function build()
+            {
+                return new UserDto(
+                    new User([
+                        'id' => $this->_id,
+                        'name' => $this->_name,
+                        'avatar' => $this->_avatar,
+                        'email' => $this->_email
+                    ])
+                );
+            }
+        };
     }
 
 

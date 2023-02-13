@@ -7,28 +7,41 @@ use App\Models\BarberService;
 use App\Models\User;
 use App\Models\UserAppointment;
 use App\Models\UserFavorite;
+use App\Services\AuthService;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
-    private $loggedUser;
+    // ------------------------------------------------------------------------
+    //         Attributes
+    // ------------------------------------------------------------------------
+    private readonly UserService $userService;
+    private readonly AuthService $authService;
 
+
+    // ------------------------------------------------------------------------
+    //         Constructor
+    // ------------------------------------------------------------------------
     public function __construct()
     {
         $this->middleware('auth:api');
-        $this->loggedUser = auth()->user();
+        $this->userService = new UserService();
+        $this->authService = new AuthService();
     }
 
+
+    // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
     public function read()
     {
-        $array = ['error' => ''];
-        $user = $this->loggedUser;
-        $user['avatar'] = url('media/avatars/' . $user['avatar']);
-        $array['data'] = $user;
+        $authenticatedUser = $this->authService->getAuthenticatedUser();
+        $user = $this->userService->findById($authenticatedUser->id);
 
-        return response()->json($array);
+        return response()->json($user);
     }
 
     public function getFavorites(Request $request)

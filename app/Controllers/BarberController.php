@@ -67,12 +67,13 @@ class BarberController extends Controller
     {
         $id = $request->input('id');
         ParameterValidator::validateRequiredParameter($id, 'id');
+        $authenticatedUser = $this->authService->getAuthenticatedUser();
 
         $barber = BarberDto::builder()
             ->barber($this->barberService->findById($id))
             ->services($this->barberServicesService->findAllByBarberId($id))
             ->testimonials($this->testimonialService->findAllByBarberId($id))
-            ->favorited($this->userService->hasFavorited($id))
+            ->favorited($this->userService->hasFavorited($authenticatedUser->id, $id))
             ->photos($this->barberPhotoService->findAllByBarberId($id))
             ->availability($this->availabilityService->findAvailability($id))
             ->build();
