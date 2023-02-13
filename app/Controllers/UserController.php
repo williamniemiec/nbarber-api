@@ -46,23 +46,8 @@ class UserController extends Controller
 
     public function getFavorites(Request $request)
     {
-        $response = ['error' => ''];
-
-        $rawFavorites = UserFavorite::select()
-            ->where('id_user', $this->loggedUser->id)
-            ->get();
-        $favoriteIds = [];
-        foreach ($rawFavorites as $favorite) {
-            $favoriteIds[] = $favorite->id_barber;
-        }
-        $favorites = array_map(function ($barberId) {
-            $barber = Barber::find($barberId);
-
-            $barber->avatar = url('/media/avatars/' . $barber->avatar);
-
-            return $barber;
-        }, $favoriteIds);
-        $response['data'] = $favorites;
+        $authenticatedUser = $this->authService->getAuthenticatedUser();
+        $response = $this->userService->findFavoritesByUserId($authenticatedUser->id);
 
         return response()->json($response);
     }

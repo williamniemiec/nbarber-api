@@ -34,6 +34,26 @@ class UserService
     // ------------------------------------------------------------------------
     //         Methods
     // ------------------------------------------------------------------------
+    public function findFavoritesByUserId($userId): array
+    {
+        $favorites = $this->findFavoritedBarbers($userId);
+
+        return array_map(
+            fn($barberId) => $this->barberService->findById($barberId),
+            $favorites
+        );
+    }
+
+    private function findFavoritedBarbers($userId): array
+    {
+        $favorites = UserFavorite::select()
+            ->where('id_user', $userId)
+            ->get()
+            ->toArray();
+
+        return array_map(fn($favorite) => $favorite->id_barber, $favorites);
+    }
+
     public function hasFavorited($userId, $barberId)
     {
         $favorited = UserFavorite::where([
