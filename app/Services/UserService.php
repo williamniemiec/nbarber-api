@@ -64,6 +64,29 @@ class UserService
         return ($favorited > 0);
     }
 
+    public function toggleFavorite($userId, $barberId)
+    {
+        $removed = false;
+        $barber = $this->barberService->findById($barberId);
+        $favorite = UserFavorite::select()
+            ->where('id_user', $userId)
+            ->where('id_barber', $barberId)
+            ->first();
+
+        if ($favorite) {
+            $favorite->delete();
+            $removed = true;
+        }
+        else {
+            $newFavorite = new UserFavorite();
+            $newFavorite->id_user = $userId;
+            $newFavorite->id_barber = $barber->id;
+            $newFavorite->save();
+        }
+
+        return $removed;
+    }
+
     public function hasUserWithEmail(string $email)
     {
         return (User::where('email', $email)->count() > 0);

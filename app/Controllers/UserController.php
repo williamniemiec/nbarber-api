@@ -54,35 +54,19 @@ class UserController extends Controller
 
     public function toggleFavorite(Request $request)
     {
-        $response = ['error' => '', 'removed' => false];
+        $validator = Validator::make($request->all(), [
+            'barber' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
         $barberId = intVal($request->input('barber'));
-
-        if (!$barberId) {
-            return ['error' => 'barber field is required'];
-        }
-
-        $barber = Barber::find($barberId);
-
-        if (!$barber) {
-            return ['error' => 'barber does not exist'];
-        }
-
-        $favorite = UserFavorite::select()
-            ->where('id_user', $this->loggedUser->id)
-            ->where('id_barber', $barberId)
-            ->first();
-
-        if ($favorite) {
-            $favorite->delete();
-            $response['removed'] = true;
-        }
-        else {
-            $newFavorite = new UserFavorite();
-            $newFavorite->id_user = $this->loggedUser->id;
-            $newFavorite->id_barber = $barberId;
-            $newFavorite->save();
-        }
+        $response['removed'] = $this->userService->toggleFavorite(
+            $this->authService->getAuthenticatedUser()->id,
+            $barberId
+        );
 
         return response()->json($response);
     }
