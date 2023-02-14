@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barber;
 use App\Models\BarberService;
+use App\Models\Dto\UpdateUserDto;
 use App\Models\User;
 use App\Models\UserAppointment;
 use App\Models\UserFavorite;
@@ -84,69 +85,44 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
-        $rules = [
+        $validator = Validator::make($request->all(), [
             'name' => 'min:2',
             'email' => 'email|unique:users',
             'password' => 'same:password_confirm',
             'password_confirm' => 'same:password'
-        ];
-        $validator = Validator::make($request->all(), $rules);
+        ]);
 
         if ($validator->fails()) {
-            return ['error' => $validator->messages()];
+            return response()->json($validator->errors(), 422);
         }
 
-        $data = $validator->validated();
-        $user = User::find($this->loggedUser->id);
+        $this->userService->update(
+            $this->authService->getAuthenticatedUser()->id,
+            UpdateUserDto::builder()
+                ->name($request->input('name')),
+                ->email($request->input('email'))
+                ->password($request->input('password'))
+                ->build()
+        );
 
-        if ($data['name']) {
-            $user->name = $data['name'];
-        }
-
-        if ($data['email']) {
-            $user->email = $data['email'];
-        }
-
-        if ($data['password']) {
-            $user->password = $data['password'];
-        }
-
-        $user->save();
+        return response()->status(200);
     }
 
     public function uploadAvatar(Request $request)
     {
-        $rules = [
+        $validator = Validator::make($request->all(), [
             'avatar' => 'required|image|mimes:png,jpg,jpeg'
-        ];
-        $validator = Validator::make($request->all(), $rules);
+        ]);
 
         if ($validator->fails()) {
-            return ['error' => $validator->messages()];
+            return response()->json($validator->errors(), 422);
         }
 
-        $avatar = $request->file('avatar');
-        $filename = $this->storeAvatar($avatar);
+        $filename = $this->userService->uploadAvatar(
+            $request->file('avatar'),
+            $this->authService->getAuthenticatedUser()->id
+        );
 
-        $user = User::find($this->loggedUser->id);
-        $user->avatar = $filename;
-        $user->save();
-    }
-
-    private function storeAvatar($avatar): string
-    {
-        $destination = public_path('/media/avatars');
-        $filename = $this->generateRandomName() . '.jpg';
-        $img = Image::make($avatar->getRealPath());
-        $img
-            ->fit(300, 300)
-            ->save($destination.'/'.$filename);
-
-        return $filename;
-    }
-
-    private function generateRandomName(): string
-    {
-        return md5(time() . rand(0, 9999));
+        return respones()->status(201);
     }
 }

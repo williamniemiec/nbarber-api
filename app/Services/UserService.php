@@ -5,9 +5,11 @@ namespace App\Services;
 use App\Exceptions\DataIntegrityException;
 use App\Exceptions\ObjectNotFoundException;
 use App\Models\Dto\NewUserDto;
+use App\Models\Dto\UpdateUserDto;
 use App\Models\Dto\UserDto;
 use App\Models\User;
 use App\Models\UserFavorite;
+use Intervention\Image\Facades\Image;
 
 /**
  * Responsible for providing user services.
@@ -117,5 +119,54 @@ class UserService
             ->avatar(url('media/avatars/' . $user->avatar))
             ->email($user->email)
             ->build();
+    }
+
+    public function update($id, UpdateUserDto $updatedUser): void
+    {
+        $user = User::find($id);
+
+        if ($updatedUser->getName()) {
+            $user->name = $updatedUser->getName();
+        }
+
+        if ($updatedUser->getEmail()) {
+            $user->email = $updatedUser->getEmail();
+        }
+
+        if ($updatedUser->getPassword()) {
+            $user->password = $updatedUser->getPassword();
+        }
+
+        if ($updatedUser->getAvatar()) {
+            $user->avatar = $updatedUser->getAvatar();
+        }
+
+        $user->save();
+    }
+
+    public function uploadAvatar($avatar, $userId)
+    {
+        $filename = $this->storeAvatar($avatar);
+
+        $user = User::find($userId);
+        $user->avatar = $filename;
+        $user->save();
+    }
+
+    private function storeAvatar($avatar): string
+    {
+        $destination = public_path('/media/avatars');
+        $filename = $this->generateRandomName() . '.jpg';
+        $img = Image::make($avatar->getRealPath());
+        $img
+            ->fit(300, 300)
+            ->save($destination.'/'.$filename);
+
+        return $filename;
+    }
+
+    private function generateRandomName(): string
+    {
+        return md5(time() . rand(0, 9999));
     }
 }
