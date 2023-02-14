@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserAppointment;
 use App\Models\UserFavorite;
 use App\Services\AuthService;
+use App\Services\UserAppointmentService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -20,6 +21,7 @@ class UserController extends Controller
     // ------------------------------------------------------------------------
     private readonly UserService $userService;
     private readonly AuthService $authService;
+    private readonly UserAppointmentService $userAppointmentService;
 
 
     // ------------------------------------------------------------------------
@@ -73,35 +75,11 @@ class UserController extends Controller
 
     public function getAppointments(Request $request)
     {
-        $response = ['error' => ''];
+        $appointments = $this->userAppointmentService->findAppointmentsByUserId(
+            $this->authService->getAuthenticatedUser()->id
+        );
 
-        $appointments = [];
-        $rawAppointments = UserAppointment::select()
-            ->where('id_user', $this->loggedUser->id)
-            ->orderBy('date', 'DESC')
-            ->get();
-
-        if ($rawAppointments) {
-            foreach ($rawAppointments as $appointment) {
-                $barber = Barber::find($appointment->id_barber);
-                $barber->avatar = url('media/avatars/' . $barber->avatar);
-
-                $service = BarberService::find($appointment->id_service);
-                $formattedAppointment = [
-                    'id' => $appointment->id,
-                    'date' => $appointment->date,
-                    'barber' => $barber
-                ];
-                $formattedAppointment['service'] = $service;
-
-                $appointments[] = $formattedAppointment;
-            }
-        }
-
-        $response['data'] = $appointments;
-
-
-        return response()->json($response);
+        return response()->json($appointments);
     }
 
     public function update(Request $request)

@@ -32,4 +32,13 @@ class BarberServicesService
 
         return ($service != null);
     }
+
+    public function findById($id)
+    {
+        $service = BarberService::select()
+            ->where('id', $id)
+            ->first();
+
+        return new BarberServiceDto($service);
+    }
 }
