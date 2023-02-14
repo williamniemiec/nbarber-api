@@ -137,10 +137,6 @@ class UserService
             $user->password = $updatedUser->getPassword();
         }
 
-        if ($updatedUser->getAvatar()) {
-            $user->avatar = $updatedUser->getAvatar();
-        }
-
         $user->save();
     }
 

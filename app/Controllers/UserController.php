@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Barber;
-use App\Models\BarberService;
 use App\Models\Dto\UpdateUserDto;
-use App\Models\User;
-use App\Models\UserAppointment;
-use App\Models\UserFavorite;
 use App\Services\AuthService;
 use App\Services\UserAppointmentService;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Intervention\Image\Facades\Image;
 
 class UserController extends Controller
 {
@@ -99,13 +93,13 @@ class UserController extends Controller
         $this->userService->update(
             $this->authService->getAuthenticatedUser()->id,
             UpdateUserDto::builder()
-                ->name($request->input('name')),
+                ->name($request->input('name'))
                 ->email($request->input('email'))
                 ->password($request->input('password'))
                 ->build()
         );
 
-        return response()->status(200);
+        return response()->statusCode(200);
     }
 
     public function uploadAvatar(Request $request)
@@ -118,11 +112,11 @@ class UserController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $filename = $this->userService->uploadAvatar(
+        $this->userService->uploadAvatar(
             $request->file('avatar'),
             $this->authService->getAuthenticatedUser()->id
         );
 
-        return respones()->status(201);
+        return response()->statusCode(201);
     }
 }
