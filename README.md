@@ -11,7 +11,7 @@
 	<a href="https://github.com/williamniemiec/nbarber-api/blob/master/LICENSE"><img src="https://img.shields.io/github/license/williamniemiec/nbarber-api" alt="License"></a>
 </p>
 <p align="center">
-	<a href='https://wniemiec-api-nbarber.up.railway.app/swagger-ui.html'><img alt='Deploy' src='https://railway.app/button.svg' width=200/></a>
+	<a href='https://wniemiec-api-nbarber.up.railway.app/request-docs'><img alt='Deploy' src='https://railway.app/button.svg' width=200/></a>
 </p>
 
 <hr />
