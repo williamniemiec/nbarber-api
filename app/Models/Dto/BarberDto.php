@@ -1,4 +1,10 @@
 <?php
+/*
+ * Copyright (c) William Niemiec.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 namespace App\Models\Dto;
 
@@ -7,6 +13,7 @@ class BarberDto implements \JsonSerializable
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
+    private ?int $id;
     private ?string $name;
     private ?string $avatar;
     private ?int $stars;
@@ -31,6 +38,7 @@ class BarberDto implements \JsonSerializable
         $availability
     )
     {
+        $this->id = $barber->id;
         $this->name = $barber->name;
         $this->avatar = $barber->avatar;
         $this->stars = $barber->stars;
@@ -121,6 +129,7 @@ class BarberDto implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return array(
+            'id' => $this->id,
             'name' => $this->name,
             'avatar' => $this->avatar,
             'stars' => $this->stars,
