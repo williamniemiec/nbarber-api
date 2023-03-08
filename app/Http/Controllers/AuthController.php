@@ -30,6 +30,7 @@ class AuthController extends Controller
         $this->middleware('auth:api', [
             'except' => ['signin', 'signup']
         ]);
+        $this->authService = new AuthService();
     }
 
     public function signin(Request $request)
