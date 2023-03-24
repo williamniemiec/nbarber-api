@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('barbers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('avatar')->default('default.png');
+            $table->string('avatar')->nullable()->default('default.png');
             $table->float('stars')->default(0);
             $table->float('latitude')->nullable();
             $table->float('longitude')->nullable();
