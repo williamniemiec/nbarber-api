@@ -26,6 +26,7 @@ class BarberPhotoService
             ->get()
             ->toArray();
 
+        $photos = array_map(fn($photo) => new BarberPhoto($photo), $photos);
         $this->completePhotosUrl($photos);
 
         return $this->toDto($photos);

@@ -89,6 +89,7 @@ class BarberService
             ->get()
             ->toArray();
 
+        $barbers = array_map(fn($barber) => new Barber($barber), $barbers);
         $this->completeAvatarsUrl($barbers);
 
         return $barbers;
@@ -113,6 +114,7 @@ class BarberService
             ->get()
             ->toArray();
 
+        $barbers = array_map(fn($barber) => new Barber($barber), $barbers);
         $this->completeAvatarsUrl($barbers);
 
         return $barbers;
