@@ -69,9 +69,8 @@ class BarberController extends Controller
         return response()->json($response);
     }
 
-    public function get(Request $request)
+    public function get(Request $request, $id)
     {
-        $id = $request->input('id');
         ParameterValidator::validateRequiredParameter($id, 'id');
         $authenticatedUser = $this->authService->getAuthenticatedUser();
 
@@ -87,7 +86,7 @@ class BarberController extends Controller
         return response()->json($barber);
     }
 
-    public function insertAppointment($id, Request $request)
+    public function insertAppointment(Request $request, $id)
     {
         $service = $request->input('service');
         $year = intval($request->input('year'));

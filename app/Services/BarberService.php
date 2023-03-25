@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\Exceptions\ObjectNotFoundException;
 use App\Models\Barber;
+use App\Models\Dto\BarberMiniDto;
 use App\Models\Dto\BarberSearchDto;
 use App\Models\Dto\BarberSearchResultDto;
 use InvalidArgumentException;
@@ -120,7 +121,7 @@ class BarberService
         return $barbers;
     }
 
-    public function findById($id): Barber
+    public function findById($id): BarberMiniDto
     {
         $barber = Barber::find($id);
 
@@ -130,6 +131,6 @@ class BarberService
 
         $this->completeAvatarUrl($barber);
 
-        return $barber;
+        return new BarberMiniDto($barber);
     }
 }

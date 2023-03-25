@@ -8,6 +8,8 @@
 
 namespace App\Models\Dto;
 
+use App\Models\Dto\BarberMiniDto;
+
 class BarberDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
@@ -38,12 +40,12 @@ class BarberDto implements \JsonSerializable
         $availability
     )
     {
-        $this->id = $barber->id;
-        $this->name = $barber->name;
-        $this->avatar = $barber->avatar;
-        $this->stars = $barber->stars;
-        $this->latitude = $barber->latitude;
-        $this->longitude = $barber->longitude;
+        $this->id = $barber->getId();
+        $this->name = $barber->getName();
+        $this->avatar = $barber->getAvatar();
+        $this->stars = $barber->getStars();
+        $this->latitude = $barber->getLatitude();
+        $this->longitude = $barber->getLongitude();
         $this->services = $services;
         $this->testimonials = $testimonials;
         $this->favorited = $favorited;
@@ -59,7 +61,7 @@ class BarberDto implements \JsonSerializable
     {
         return new class
         {
-            private ?string $_barber;
+            private ?BarberMiniDto $_barber;
             private ?array $_services;
             private ?array $_testimonials;
             private ?bool $_favorited;

@@ -21,11 +21,14 @@ class BarberTestimonialService
     // ------------------------------------------------------------------------
     public function findAllByBarberId($id): array
     {
-        $testimonials = BarberTestimonial::select(['id', 'title', 'rate', 'body', 'user'])
+        $testimonials = BarberTestimonial::select(['id', 'title', 'rate', 'body', 'id_user'])
             ->where('id_barber', $id)
             ->get()
             ->toArray();
-
+        $testimonials = array_map(
+            fn($testimonial) => new BarberTestimonial($testimonial),
+            $testimonials
+        );
         return array_map(
             fn($testimonial) => new BarberTestimonialDto($testimonial),
             $testimonials

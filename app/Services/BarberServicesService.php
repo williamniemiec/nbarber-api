@@ -26,7 +26,7 @@ class BarberServicesService
             ->get()
             ->toArray();
 
-        return array_map(fn($service) => new BarberServiceDto($service), $services);
+        return array_map(fn($service) => new BarberServiceDto(new BarberService($service)), $services);
     }
 
     public function hasService($serviceId, $barberId): bool
@@ -45,6 +45,6 @@ class BarberServicesService
             ->where('id', $id)
             ->first();
 
-        return new BarberServiceDto($service);
+        return new BarberServiceDto(new BarberService($service));
     }
 }
