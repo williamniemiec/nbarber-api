@@ -18,6 +18,7 @@ class BarberReview extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id',
         'rate',
         'id_barber'
     ];

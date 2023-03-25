@@ -18,6 +18,7 @@ class BarberPhoto extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id',
         'url',
         'id_barber'
     ];

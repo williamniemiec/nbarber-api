@@ -18,6 +18,7 @@ class UserAppointment extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id',
         'date',
         'id_user',
         'id_barber',

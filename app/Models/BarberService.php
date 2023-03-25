@@ -18,6 +18,7 @@ class BarberService extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id',
         'name',
         'id_barber',
         'price'

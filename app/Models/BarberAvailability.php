@@ -18,6 +18,7 @@ class BarberAvailability extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'id',
         'name',
         'weekday',
         'hours',
