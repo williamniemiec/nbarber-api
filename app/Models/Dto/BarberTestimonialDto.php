@@ -52,7 +52,7 @@ class BarberTestimonialDto implements \JsonSerializable
             'title' => $this->title,
             'rate' => $this->rate,
             'body' => $this->body,
-            'user' => json_encode($this->user)
+            'user' => $this->user
         );
     }
 
