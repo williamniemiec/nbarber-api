@@ -59,7 +59,7 @@ class UserService
             ->get()
             ->toArray();
 
-        return array_map(fn($favorite) => $favorite->id_barber, $favorites);
+        return array_map(fn($favorite) => $favorite['id_barber'], $favorites);
     }
 
     public function hasFavorited($userId, $barberId)
