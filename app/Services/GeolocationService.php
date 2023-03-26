@@ -35,7 +35,7 @@ class GeolocationService
     // ------------------------------------------------------------------------
     //         Methods
     // ------------------------------------------------------------------------
-    public function getGeolocation(string $address): GeolocationDto
+    public function getGeolocation(string $address): GeolocationDto | null
     {
         $geolocation = null;
         $url = $this->buildUrlForAddress($address);

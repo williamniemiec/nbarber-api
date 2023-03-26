@@ -8,7 +8,7 @@
 
 namespace App\Models\Dto;
 
-class Geolocation implements \JsonSerializable
+class GeolocationDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes

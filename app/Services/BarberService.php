@@ -48,7 +48,7 @@ class BarberService
             $geolocation = $this->geolocationService->getGeolocation($city);
 
             if (!$geolocation) {
-                throw new InvalidArgumentException('Address not found');
+                return BarberSearchResultDto::empty();
             }
             $latitude = $geolocation->getLatitude();
             $longitude = $geolocation->getLongitude();
@@ -57,7 +57,7 @@ class BarberService
             $city = $this->geolocationService->getAddress($latitude, $longitude);
 
             if (!$city) {
-                throw new InvalidArgumentException('Invalid latitude and / or longitude');
+                return BarberSearchResultDto::empty();
             }
         }
         else {
@@ -110,11 +110,10 @@ class BarberService
 
     public function search(string $term): array
     {
-        $barbers = Barber::select()
-            ->where('name', 'LIKE', '%' . $term . '%')
+        $barbers = Barber::where('name', 'ilike', '%' . $term . '%')
             ->get()
             ->toArray();
-
+        dd($barbers);
         $barbers = array_map(fn($barber) => new Barber($barber), $barbers);
         $this->completeAvatarsUrl($barbers);
 
