@@ -45,6 +45,6 @@ class BarberServicesService
             ->where('id', $id)
             ->first();
 
-        return new BarberServiceDto(new BarberService($service));
+        return new BarberServiceDto($service);
     }
 }

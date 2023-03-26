@@ -137,11 +137,11 @@ class BarberDto implements \JsonSerializable
             'stars' => $this->stars,
             'latitude' => $this->latitude,
             'longitude' => $this->longitude,
-            'services' => json_encode($this->services),
-            'testimonials' => json_encode($this->testimonials),
+            'services' => $this->services,
+            'testimonials' => $this->testimonials,
             'favorited' => $this->favorited,
-            'photos' => json_encode($this->photos),
-            'availability' => json_encode($this->availability)
+            'photos' => $this->photos,
+            'availability' => $this->availability
         );
     }
 

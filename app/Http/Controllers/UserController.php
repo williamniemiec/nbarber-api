@@ -33,6 +33,7 @@ class UserController extends Controller
         $this->middleware('auth:api');
         $this->userService = new UserService();
         $this->authService = new AuthService();
+        $this->userAppointmentService = new UserAppointmentService();
     }
 
 

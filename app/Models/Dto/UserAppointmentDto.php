@@ -15,7 +15,7 @@ class UserAppointmentDto implements \JsonSerializable
     // ------------------------------------------------------------------------
     private readonly ?int $id;
     private readonly ?string $date;
-    private readonly ?BarberDto $barber;
+    private readonly ?BarberMiniDto $barber;
     private readonly ?BarberServiceDto $service;
 
 
@@ -40,7 +40,7 @@ class UserAppointmentDto implements \JsonSerializable
         {
             private ?int $_id;
             private ?string $_date;
-            private ?BarberDto $_barber;
+            private ?BarberMiniDto $_barber;
             private ?BarberServiceDto $_service;
 
             public function id($value)
