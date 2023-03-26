@@ -113,7 +113,6 @@ class BarberService
         $barbers = Barber::where('name', 'ilike', '%' . $term . '%')
             ->get()
             ->toArray();
-        dd($barbers);
         $barbers = array_map(fn($barber) => new Barber($barber), $barbers);
         $this->completeAvatarsUrl($barbers);
 
