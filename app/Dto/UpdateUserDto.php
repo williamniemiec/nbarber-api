@@ -6,30 +6,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
+namespace App\Dto;
 
-use App\Models\User;
-
-class UserDto implements \JsonSerializable
+class UpdateUserDto
 {
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private readonly ?int $id;
     private readonly ?string $name;
-    private readonly ?string $avatar;
     private readonly ?string $email;
+    private readonly ?string $password;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(?User $user)
+    public function __construct($name, $email, $password)
     {
-        $this->id = $user->id;
-        $this->name = $user->name;
-        $this->avatar = $user->avatar;
-        $this->email = $user->email;
+        $this->name = $name;
+        $this->email = $email;
+        $this->password = $password;
     }
 
 
@@ -40,16 +36,9 @@ class UserDto implements \JsonSerializable
     {
         return new class
         {
-            private ?int $_id;
             private ?string $_name;
             private ?string $_email;
-            private ?string $_avatar;
-
-            public function id($value)
-            {
-                $this->_id = $value;
-                return $this;
-            }
+            private ?string $_password;
 
             public function name($value)
             {
@@ -63,21 +52,18 @@ class UserDto implements \JsonSerializable
                 return $this;
             }
 
-            public function avatar($value)
+            public function password($value)
             {
-                $this->_avatar = $value;
+                $this->_password = $value;
                 return $this;
             }
 
             public function build()
             {
-                return new UserDto(
-                    new User([
-                        'id' => $this->_id,
-                        'name' => $this->_name,
-                        'avatar' => $this->_avatar,
-                        'email' => $this->_email
-                    ])
+                return new UpdateUserDto(
+                    $this->_name,
+                    $this->_email,
+                    $this->_password
                 );
             }
         };
@@ -85,45 +71,20 @@ class UserDto implements \JsonSerializable
 
 
     // ------------------------------------------------------------------------
-    //         Methods
-    // ------------------------------------------------------------------------
-    /**
-     * {@inheritDoc}
-     *  @see \JsonSerializable::jsonSerialize()
-     *
-     *  @Override
-     */
-    public function jsonSerialize(): array
-    {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'avatar' => $this->avatar,
-            'email' => $this->email
-        );
-    }
-
-
-    // ------------------------------------------------------------------------
     //         Getters
     // ------------------------------------------------------------------------
-    public function getId()
-    {
-        return $this->id;
-    }
-
     public function getName()
     {
         return $this->name;
     }
 
-    public function getAvatar()
-    {
-        return $this->avatar;
-    }
-
     public function getEmail()
     {
         return $this->email;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
     }
 }

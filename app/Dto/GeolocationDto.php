@@ -6,33 +6,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
+namespace App\Dto;
 
-class BarberSearchResultDto implements \JsonSerializable
+class GeolocationDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private array $barbers;
-    private ?string $location;
+    private readonly float $latitude;
+    private readonly float $longitude;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(array $barbers, string $location)
+    public function __construct(float $latitude, float $longitude)
     {
-        $this->barbers = $barbers;
-        $this->location = $location;
-    }
-
-
-    // ------------------------------------------------------------------------
-    //         Factories
-    // ------------------------------------------------------------------------
-    public static function empty()
-    {
-        return new BarberSearchResultDto([], "");
+        $this->latitude = $latitude;
+        $this->longitude = $longitude;
     }
 
 
@@ -48,8 +39,8 @@ class BarberSearchResultDto implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return array(
-            'barbers' => $this->barbers,
-            'location' => $this->location
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude
         );
     }
 
@@ -57,13 +48,13 @@ class BarberSearchResultDto implements \JsonSerializable
     // ------------------------------------------------------------------------
     //         Getters
     // ------------------------------------------------------------------------
-    public function getBarbers()
+    public function getLatitude(): float
     {
-        return $this->barbers;
+        return $this->latitude;
     }
 
-    public function getLocation()
+    public function getLongitude(): float
     {
-        return $this->location;
+        return $this->longitude;
     }
 }

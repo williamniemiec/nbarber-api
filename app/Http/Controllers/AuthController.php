@@ -8,7 +8,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dto\NewUserDto;
+use App\Dto\NewUserDto;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;

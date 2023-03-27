@@ -6,28 +6,33 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
+namespace App\Dto;
 
-use App\Models\BarberService;
-
-class BarberServiceDto implements \JsonSerializable
+class BarberSearchResultDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private readonly int $id;
-    private readonly string $name;
-    private readonly float $price;
+    private array $barbers;
+    private ?string $location;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(BarberService $service)
+    public function __construct(array $barbers, string $location)
     {
-        $this->id = $service->id;
-        $this->name = $service->name;
-        $this->price = $service->price;
+        $this->barbers = $barbers;
+        $this->location = $location;
+    }
+
+
+    // ------------------------------------------------------------------------
+    //         Factories
+    // ------------------------------------------------------------------------
+    public static function empty()
+    {
+        return new BarberSearchResultDto([], "");
     }
 
 
@@ -43,9 +48,8 @@ class BarberServiceDto implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'price' => $this->price
+            'barbers' => $this->barbers,
+            'location' => $this->location
         );
     }
 
@@ -53,18 +57,13 @@ class BarberServiceDto implements \JsonSerializable
     // ------------------------------------------------------------------------
     //         Getters
     // ------------------------------------------------------------------------
-    public function getId()
+    public function getBarbers()
     {
-        return $this->id;
+        return $this->barbers;
     }
 
-    public function getName()
+    public function getLocation()
     {
-        return $this->name;
-    }
-
-    public function getPrice()
-    {
-        return $this->price;
+        return $this->location;
     }
 }

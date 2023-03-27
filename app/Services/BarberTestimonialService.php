@@ -9,7 +9,7 @@
 namespace App\Services;
 
 use App\Models\BarberTestimonial;
-use App\Models\Dto\BarberTestimonialDto;
+use App\Dto\BarberTestimonialDto;
 
 /**
  * Responsible for providing barber testimonial services.

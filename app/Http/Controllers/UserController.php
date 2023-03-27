@@ -8,7 +8,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dto\UpdateUserDto;
+use App\Dto\UpdateUserDto;
 use App\Services\AuthService;
 use App\Services\UserAppointmentService;
 use App\Services\UserService;

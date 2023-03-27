@@ -8,7 +8,7 @@
 
 namespace App\Services;
 
-use App\Models\Dto\NewUserDto;
+use App\Dto\NewUserDto;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 

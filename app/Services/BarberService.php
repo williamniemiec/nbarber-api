@@ -10,9 +10,9 @@ namespace App\Services;
 
 use App\Exceptions\ObjectNotFoundException;
 use App\Models\Barber;
-use App\Models\Dto\BarberMiniDto;
-use App\Models\Dto\BarberSearchDto;
-use App\Models\Dto\BarberSearchResultDto;
+use App\Dto\BarberMiniDto;
+use App\Dto\BarberSearchDto;
+use App\Dto\BarberSearchResultDto;
 use InvalidArgumentException;
 
 /**

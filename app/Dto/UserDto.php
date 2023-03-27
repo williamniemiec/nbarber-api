@@ -6,26 +6,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
+namespace App\Dto;
 
-class UpdateUserDto
+use App\Models\User;
+
+class UserDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
+    private readonly ?int $id;
     private readonly ?string $name;
+    private readonly ?string $avatar;
     private readonly ?string $email;
-    private readonly ?string $password;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct($name, $email, $password)
+    public function __construct(?User $user)
     {
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = $password;
+        $this->id = $user->id;
+        $this->name = $user->name;
+        $this->avatar = $user->avatar;
+        $this->email = $user->email;
     }
 
 
@@ -36,9 +40,16 @@ class UpdateUserDto
     {
         return new class
         {
+            private ?int $_id;
             private ?string $_name;
             private ?string $_email;
-            private ?string $_password;
+            private ?string $_avatar;
+
+            public function id($value)
+            {
+                $this->_id = $value;
+                return $this;
+            }
 
             public function name($value)
             {
@@ -52,18 +63,21 @@ class UpdateUserDto
                 return $this;
             }
 
-            public function password($value)
+            public function avatar($value)
             {
-                $this->_password = $value;
+                $this->_avatar = $value;
                 return $this;
             }
 
             public function build()
             {
-                return new UpdateUserDto(
-                    $this->_name,
-                    $this->_email,
-                    $this->_password
+                return new UserDto(
+                    new User([
+                        'id' => $this->_id,
+                        'name' => $this->_name,
+                        'avatar' => $this->_avatar,
+                        'email' => $this->_email
+                    ])
                 );
             }
         };
@@ -71,20 +85,45 @@ class UpdateUserDto
 
 
     // ------------------------------------------------------------------------
+    //         Methods
+    // ------------------------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     *  @see \JsonSerializable::jsonSerialize()
+     *
+     *  @Override
+     */
+    public function jsonSerialize(): array
+    {
+        return array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'avatar' => $this->avatar,
+            'email' => $this->email
+        );
+    }
+
+
+    // ------------------------------------------------------------------------
     //         Getters
     // ------------------------------------------------------------------------
+    public function getId()
+    {
+        return $this->id;
+    }
+
     public function getName()
     {
         return $this->name;
     }
 
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
     public function getEmail()
     {
         return $this->email;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
     }
 }

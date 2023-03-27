@@ -8,8 +8,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dto\BarberDto;
-use App\Models\Dto\BarberSearchDto;
+use App\Dto\BarberDto;
+use App\Dto\BarberSearchDto;
 use App\Models\UserAppointment;
 use App\Services\AuthService;
 use App\Services\BarberAvailabilityService;

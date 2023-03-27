@@ -6,9 +6,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
-
-use App\Models\Dto\BarberMiniDto;
+namespace App\Dto;
 
 class BarberDto implements \JsonSerializable
 {

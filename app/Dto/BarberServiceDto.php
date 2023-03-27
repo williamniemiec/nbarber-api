@@ -6,24 +6,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
+namespace App\Dto;
 
-class BarberAvailabilityDto implements \JsonSerializable
+use App\Models\BarberService;
+
+class BarberServiceDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private readonly string $date;
-    private readonly array $hours;
+    private readonly int $id;
+    private readonly string $name;
+    private readonly float $price;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(string $date, array $hours)
+    public function __construct(BarberService $service)
     {
-        $this->date = $date;
-        $this->hours = $hours;
+        $this->id = $service->id;
+        $this->name = $service->name;
+        $this->price = $service->price;
     }
 
 
@@ -39,8 +43,9 @@ class BarberAvailabilityDto implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return array(
-            'date' => $this->date,
-            'hours' => $this->hours
+            'id' => $this->id,
+            'name' => $this->name,
+            'price' => $this->price
         );
     }
 
@@ -48,14 +53,18 @@ class BarberAvailabilityDto implements \JsonSerializable
     // ------------------------------------------------------------------------
     //         Getters
     // ------------------------------------------------------------------------
-    public function getDate()
+    public function getId()
     {
-        return $this->date;
+        return $this->id;
     }
 
-    public function getHours()
+    public function getName()
     {
-        return $this->hours;
+        return $this->name;
+    }
+
+    public function getPrice()
+    {
+        return $this->price;
     }
 }
-

@@ -9,7 +9,7 @@
 namespace App\Services;
 
 use App\Models\BarberAvailability;
-use App\Models\Dto\BarberAvailabilityDto;
+use App\Dto\BarberAvailabilityDto;
 
 /**
  * Responsible for providing barber availability services.

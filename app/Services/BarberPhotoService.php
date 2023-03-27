@@ -9,7 +9,7 @@
 namespace App\Services;
 
 use App\Models\BarberPhoto;
-use App\Models\Dto\BarberPhotoDto;
+use App\Dto\BarberPhotoDto;
 
 /**
  * Responsible for providing barber photo services.

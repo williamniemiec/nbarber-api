@@ -6,26 +6,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
+namespace App\Dto;
 
-use App\Models\BarberPhoto;
-
-class BarberPhotoDto implements \JsonSerializable
+class BarberAvailabilityDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private readonly int $id;
-    private readonly string $url;
+    private readonly string $date;
+    private readonly array $hours;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(BarberPhoto $photo)
+    public function __construct(string $date, array $hours)
     {
-        $this->id = $photo->id;
-        $this->url = $photo->url;
+        $this->date = $date;
+        $this->hours = $hours;
     }
 
 
@@ -41,8 +39,8 @@ class BarberPhotoDto implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return array(
-            'id' => $this->id,
-            'url' => $this->url
+            'date' => $this->date,
+            'hours' => $this->hours
         );
     }
 
@@ -50,13 +48,14 @@ class BarberPhotoDto implements \JsonSerializable
     // ------------------------------------------------------------------------
     //         Getters
     // ------------------------------------------------------------------------
-    public function getId()
+    public function getDate()
     {
-        return $this->id;
+        return $this->date;
     }
 
-    public function getUrl()
+    public function getHours()
     {
-        return $this->url;
+        return $this->hours;
     }
 }
+

@@ -10,9 +10,9 @@ namespace App\Services;
 
 use App\Exceptions\DataIntegrityException;
 use App\Exceptions\ObjectNotFoundException;
-use App\Models\Dto\NewUserDto;
-use App\Models\Dto\UpdateUserDto;
-use App\Models\Dto\UserDto;
+use App\Dto\NewUserDto;
+use App\Dto\UpdateUserDto;
+use App\Dto\UserDto;
 use App\Models\User;
 use App\Models\UserFavorite;
 use Intervention\Image\Facades\Image;

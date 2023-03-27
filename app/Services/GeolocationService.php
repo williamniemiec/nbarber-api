@@ -8,7 +8,7 @@
 
 namespace App\Services;
 
-use App\Models\Dto\GeolocationDto;
+use App\Dto\GeolocationDto;
 
 /**
  * Responsible for providing addresses and latitude / longitude information..

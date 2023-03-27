@@ -6,35 +6,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
- namespace App\Models\Dto;
+namespace App\Dto;
 
- use App\Models\Barber;
+use App\Models\BarberPhoto;
 
- class BarberMiniDto implements \JsonSerializable
- {
+class BarberPhotoDto implements \JsonSerializable
+{
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
     private readonly int $id;
-    private string $name;
-    private string $avatar;
-    private int $stars;
-    private float $latitude;
-    private float $longitude;
+    private readonly string $url;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(Barber $barber)
+    public function __construct(BarberPhoto $photo)
     {
-        $this->id = $barber->id;
-        $this->name = $barber->name;
-        $this->avatar = $barber->avatar;
-        $this->stars = $barber->stars;
-        $this->latitude = $barber->latitude;
-        $this->longitude = $barber->longitude;
+        $this->id = $photo->id;
+        $this->url = $photo->url;
     }
+
 
     // ------------------------------------------------------------------------
     //         Methods
@@ -49,11 +42,7 @@
     {
         return array(
             'id' => $this->id,
-            'name' => $this->name,
-            'avatar' => $this->avatar,
-            'stars' => $this->stars,
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude
+            'url' => $this->url
         );
     }
 
@@ -66,28 +55,8 @@
         return $this->id;
     }
 
-    public function getName()
+    public function getUrl()
     {
-        return $this->name;
-    }
-
-    public function getAvatar()
-    {
-        return $this->avatar;
-    }
-
-    public function getStars()
-    {
-        return $this->stars;
-    }
-
-    public function getLatitude()
-    {
-        return $this->latitude;
-    }
-
-    public function getLongitude()
-    {
-        return $this->longitude;
+        return $this->url;
     }
 }

@@ -8,7 +8,7 @@
 
 namespace App\Services;
 
-use App\Models\Dto\UserAppointmentDto;
+use App\Dto\UserAppointmentDto;
 use App\Models\UserAppointment;
 
 /**

@@ -6,24 +6,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
+namespace App\Dto;
 
-class GeolocationDto implements \JsonSerializable
+use App\Models\BarberTestimonial;
+
+class BarberTestimonialDto implements \JsonSerializable
 {
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
-    private readonly float $latitude;
-    private readonly float $longitude;
+    private readonly int $id;
+    private readonly string $title;
+    private readonly float $rate;
+    private readonly string $body;
+    private readonly UserDto $user;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(float $latitude, float $longitude)
+    public function __construct(BarberTestimonial $testimonial)
     {
-        $this->latitude = $latitude;
-        $this->longitude = $longitude;
+        $this->id = $testimonial->id;
+        $this->title = $testimonial->title;
+        $this->rate = $testimonial->rate;
+        $this->body = $testimonial->body;
+        $this->user = new UserDto($testimonial->user);
     }
 
 
@@ -39,8 +47,11 @@ class GeolocationDto implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return array(
-            'latitude' => $this->latitude,
-            'longitude' => $this->longitude
+            'id' => $this->id,
+            'title' => $this->title,
+            'rate' => $this->rate,
+            'body' => $this->body,
+            'user' => $this->user
         );
     }
 
@@ -48,13 +59,28 @@ class GeolocationDto implements \JsonSerializable
     // ------------------------------------------------------------------------
     //         Getters
     // ------------------------------------------------------------------------
-    public function getLatitude(): float
+    public function getId()
     {
-        return $this->latitude;
+        return $this->id;
     }
 
-    public function getLongitude(): float
+    public function getTitle()
     {
-        return $this->longitude;
+        return $this->title;
+    }
+
+    public function getRate()
+    {
+        return $this->rate;
+    }
+
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    public function getUser()
+    {
+        return $this->user;
     }
 }

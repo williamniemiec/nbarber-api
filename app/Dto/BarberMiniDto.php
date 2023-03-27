@@ -6,35 +6,35 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-namespace App\Models\Dto;
+ namespace App\Dto;
 
-use App\Models\BarberTestimonial;
-use App\Models\User;
+ use App\Models\Barber;
 
-class BarberTestimonialDto implements \JsonSerializable
-{
+ class BarberMiniDto implements \JsonSerializable
+ {
     // ------------------------------------------------------------------------
     //         Attributes
     // ------------------------------------------------------------------------
     private readonly int $id;
-    private readonly string $title;
-    private readonly float $rate;
-    private readonly string $body;
-    private readonly UserDto $user;
+    private string $name;
+    private string $avatar;
+    private int $stars;
+    private float $latitude;
+    private float $longitude;
 
 
     // ------------------------------------------------------------------------
     //         Constructor
     // ------------------------------------------------------------------------
-    public function __construct(BarberTestimonial $testimonial)
+    public function __construct(Barber $barber)
     {
-        $this->id = $testimonial->id;
-        $this->title = $testimonial->title;
-        $this->rate = $testimonial->rate;
-        $this->body = $testimonial->body;
-        $this->user = new UserDto($testimonial->user);
+        $this->id = $barber->id;
+        $this->name = $barber->name;
+        $this->avatar = $barber->avatar;
+        $this->stars = $barber->stars;
+        $this->latitude = $barber->latitude;
+        $this->longitude = $barber->longitude;
     }
-
 
     // ------------------------------------------------------------------------
     //         Methods
@@ -49,10 +49,11 @@ class BarberTestimonialDto implements \JsonSerializable
     {
         return array(
             'id' => $this->id,
-            'title' => $this->title,
-            'rate' => $this->rate,
-            'body' => $this->body,
-            'user' => $this->user
+            'name' => $this->name,
+            'avatar' => $this->avatar,
+            'stars' => $this->stars,
+            'latitude' => $this->latitude,
+            'longitude' => $this->longitude
         );
     }
 
@@ -65,23 +66,28 @@ class BarberTestimonialDto implements \JsonSerializable
         return $this->id;
     }
 
-    public function getTitle()
+    public function getName()
     {
-        return $this->title;
+        return $this->name;
     }
 
-    public function getRate()
+    public function getAvatar()
     {
-        return $this->rate;
+        return $this->avatar;
     }
 
-    public function getBody()
+    public function getStars()
     {
-        return $this->body;
+        return $this->stars;
     }
 
-    public function getUser()
+    public function getLatitude()
     {
-        return $this->user;
+        return $this->latitude;
+    }
+
+    public function getLongitude()
+    {
+        return $this->longitude;
     }
 }
