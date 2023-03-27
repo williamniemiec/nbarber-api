@@ -36,6 +36,24 @@ See [here](https://wniemiec-api-nbarber.up.railway.app/request-docs) the OpenAPI
 - [Postgres 15](https://www.php.net/);
 - [Composer](https://getcomposer.org/).
 
+## ℹ How to run
+
+1. Create database
+> chmod +x createdb.sh && ./createdb.sh
+
+2. Install project
+> composer install
+
+3. Run migrations
+> php artisan make:migration
+
+4. Seed database
+> php artisan db:seed
+
+5. Run project
+> php artisan serve
+
+
 ## 🚩 Changelog
 Details about each version are documented in the [releases section](https://github.com/williamniemiec/nbarber-api/releases).
 
