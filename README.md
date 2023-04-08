@@ -60,7 +60,7 @@ Details about each version are documented in the [releases section](https://gith
 ## 🗺 Project structure
 
 #### Application
-![application](https://raw.githubusercontent.com/williamniemiec/nbarber-api/master/docs/images/design/architecture.jpg)
+![application](https://raw.githubusercontent.com/williamniemiec/nbarber-api/master/docs/images/design/architecture.png)
 
 #### Database
 ![database](https://raw.githubusercontent.com/williamniemiec/nbarber-api/master/docs/images/design/database.png)
