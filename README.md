@@ -11,13 +11,13 @@
 	<a href="https://github.com/williamniemiec/nbarber-api/blob/master/LICENSE"><img src="https://img.shields.io/github/license/williamniemiec/nbarber-api" alt="License"></a>
 </p>
 <p align="center">
-	<a href='https://wniemiec-api-nbarber.up.railway.app/request-docs'><img alt='Deploy' src='https://railway.app/button.svg' width=200/></a>
+	<a href='https://wniemiec-api-nbarber.up.railway.app/request-docs'><img alt='Deploy' src='https://render.com/images/deploy-to-render-button.svg' width=200/></a>
 </p>
 
 <hr />
 
 ## ❇ Introduction
-nBarber is an API built with Laravel Framework for a simple barber system. This application was made for the sole purpose of learning the Laravel framework better. You can interact with the project through the Railway platform ([click here to access](https://wniemiec-api-nbarber.up.railway.app/request-docs)).
+nBarber is an API built with Laravel Framework for a simple barber system. This application was made for the sole purpose of learning the Laravel framework better. You can interact with the project through the Railway platform ([click here to access](https://wniemiec-api-nbarber.onrender.com/request-docs)).
 
 ### Login information
 | Email| Password |
@@ -28,7 +28,7 @@ nBarber is an API built with Laravel Framework for a simple barber system. This 
 The hosting service may have a certain delay (~ 1 min) for uploading the application so the loading of the website may have a certain delay. 
 
 ## 📖 Documentation
-See [here](https://wniemiec-api-nbarber.up.railway.app/request-docs) the OpenAPI documentation.
+See [here](https://wniemiec-api-nbarber.onrender.com/request-docs) the OpenAPI documentation.
 
 ## ✔ Requiremens
 - [Node v12+](https://nodejs.org/);
