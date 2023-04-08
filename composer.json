@@ -11,6 +11,7 @@
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "rakutentech/laravel-request-docs": "^2.14",
         "tymon/jwt-auth": "*"
     },
     "require-dev": {
@@ -20,7 +21,6 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1",
         "phpunit/phpunit": "^9.5.10",
-        "rakutentech/laravel-request-docs": "^1.31",
         "spatie/laravel-ignition": "^1.0"
     },
     "autoload": {
